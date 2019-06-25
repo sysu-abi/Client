@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activity.DoSurveyActivity">
+
+    <TextView
+        android:id="@+id/do_survey_qid"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Question 1" />
+
+    <TextView
+        android:id="@+id/do_survey_ques_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="this is a question content"
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="34dp" />
+
+    <RadioGroup
+        android:id="@+id/do_survey_radio_group"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="70dp">
+
+        <RadioButton
+            android:id="@+id/do_survey_answer_a"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="A. answer_a"/>
+        <RadioButton
+            android:id="@+id/do_survey_answer_b"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="B. answer_b"/>
+        <RadioButton
+            android:id="@+id/do_survey_answer_c"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="C. answer_c"/>
+
+        <RadioButton
+            android:id="@+id/do_survey_answer_d"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="D. answer_d" />
+
+    </RadioGroup>
+
+    <Button
+        android:id="@+id/do_survey_submit_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Next"
+        tools:layout_editor_absoluteX="282dp"
+        tools:layout_editor_absoluteY="302dp" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

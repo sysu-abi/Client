@@ -1,6 +1,11 @@
 package com.sysu.ceres.http;
 
 import com.sysu.ceres.model.MessageList;
+import com.sysu.ceres.model.QuestionList;
+import com.sysu.ceres.model.Status;
+import com.sysu.ceres.model.Survey;
+import com.sysu.ceres.model.SurveyFull;
+import com.sysu.ceres.model.SurveyList;
 import com.sysu.ceres.model.TaskList;
 
 import io.reactivex.Observable;
@@ -41,10 +46,24 @@ public class ApiMethods {
         ApiSubscribe(Api.getApiService().getTaskListByStartTime(mode, false), observer);
     }
 
-
     public static void getMessageList(Observer<MessageList> observer, int tid) {
         ApiSubscribe(Api.getApiService().getMessageList(tid), observer);
     }
 
+    public static void addQuestion(Observer<Status> observer, long sid, long qid, String qtype, String qtitle, String answer_a, String answer_b, String answer_c, String answer_d) {
+        ApiSubscribe(Api.getApiService().addQuestion(sid, qid, qtype, qtitle, answer_a, answer_b, answer_c, answer_d), observer);
+    }
+
+    public static void getSurveyList(Observer<SurveyList> observer, long tid) {
+        ApiSubscribe(Api.getApiService().getSurveyList(tid), observer);
+    }
+
+    public static void getQuestionList(Observer<SurveyFull> observer, long sid) {
+        ApiSubscribe(Api.getApiService().getQuestionList(sid), observer);
+    }
+
+    public static void updateAnswers(Observer<Status> observer, long sid, long qid, String answer) {
+        ApiSubscribe(Api.getApiService().updateAnswers(sid, qid, answer), observer);
+    }
 
 }

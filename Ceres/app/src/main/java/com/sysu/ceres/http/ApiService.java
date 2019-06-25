@@ -2,6 +2,11 @@ package com.sysu.ceres.http;
 
 import com.sysu.ceres.model.Message;
 import com.sysu.ceres.model.MessageList;
+import com.sysu.ceres.model.QuestionList;
+import com.sysu.ceres.model.Status;
+import com.sysu.ceres.model.Survey;
+import com.sysu.ceres.model.SurveyFull;
+import com.sysu.ceres.model.SurveyList;
 import com.sysu.ceres.model.TaskList;
 
 import io.reactivex.Observable;
@@ -43,5 +48,24 @@ public interface ApiService {
     // 获取该用户参与的所有任务：**http://111.230.13.139:8080/ServerAndDB/getJoinTasks?uid=1
     @POST("getJoinTasks")
     Observable<TaskList> getJoinTasks(@Query("uid") int uid);
+
+    // 添加调查问卷问题：http://111.230.13.139:8080/ServerAndDB/addQuestion?sid=2&qid=5&qtype=choice&qtitle=where&answer_a=guanghzou&answer_b=shanghai&answer_c=shenzhen&answer_d=others
+    @POST("addQuestion")
+    Observable<Status> addQuestion(@Query("sid") long sid, @Query("qid") long qid,
+                                       @Query("qtype") String qtype, @Query("qtitle") String qtitle,
+                                       @Query("answer_a") String answer_a, @Query("answer_b") String answer_b,
+                                       @Query("answer_c") String answer_c, @Query("answer_d") String answer_d);
+
+    // 获取指定Task下的所有调查问卷  http://111.230.13.139:8080/ServerAndDB/getSurveyList?tid=3
+    @POST("getSurveyList")
+    Observable<SurveyList> getSurveyList(@Query("tid") long tid);
+
+    // 获取指定调查问卷的所有问题 http://111.230.13.139:8080/ServerAndDB/getSurvey?sid=3
+    @POST("getSurvey")
+    Observable<SurveyFull> getQuestionList(@Query("sid") long sid);
+
+    // 更新调查问卷选项信息 http://111.230.13.139:8080/ServerAndDB/updateAnswers?sid=2&qid=4&answer=A
+    @POST("updateAnswers")
+    Observable<Status> updateAnswers(@Query("sid") long sid, @Query("qid") long qid, @Query("answer") String answer);
 
 }
