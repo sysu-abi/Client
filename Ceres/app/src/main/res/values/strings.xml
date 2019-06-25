@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">Ceres</string>
+
+    <!--BottomNavigation title-->
+    <string name="title_home">首页</string>
+    <string name="title_mine">我的</string>
+
+    <string name="title_activity_task_detail">TaskDetailActivity</string>
+    <string name="tab_text_1">详情</string>
+    <string name="tab_text_2">留言</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="get_mycreate_task">查看我发布的任务</string>
+    <string name="get_myjoin_task">查看我接取的任务</string>
+    <string name="regist_or_login">注册/登陆</string>
+</resources>
