@@ -8,6 +8,7 @@ import com.sysu.ceres.model.Survey;
 import com.sysu.ceres.model.SurveyFull;
 import com.sysu.ceres.model.SurveyList;
 import com.sysu.ceres.model.TaskList;
+import com.sysu.ceres.model.UserList;
 
 import io.reactivex.Observable;
 
@@ -15,7 +16,51 @@ import retrofit2.http.POST;
 import retrofit2.http.Query;
 
 public interface ApiService {
-//    创建任务：http://111.230.13.139:8080/ServerAndDB/createTask?uid=8&title=test&detail=abc&money=3&type=poll&total_num=2&end_time=2020-0101 00:00:00
+    //    用户注册：http://111.230.13.139:8080/ServerAndDB/userRegist?name=ycl&phone=23456789091&email=123@123.com&password=123
+    @POST("userRegist")
+    Observable<Status> userRigist(@Query("name") String name, @Query("phone") String phone, @Query("email") String email, @Query("password") String password);
+    //    用户登录：http://111.230.13.139:8080/ServerAndDB/userLogin?name=ycl&password=123
+    @POST("userLogin")
+    Observable<Status> userLogin(@Query("name") String name, @Query("password") String password);
+    // 查看用户资料：**http://111.230.13.139:8080/ServerAndDB/getUser?name=ycl
+    @POST("getUser")
+    Observable<Status> getUser(@Query("name") String name);
+
+
+    //    创建任务：http://111.230.13.139:8080/ServerAndDB/createTask?uid=8&title=test&detail=abc&money=3&type=poll&total_num=2&end_time=2020-01-01 00:00:00
+    @POST("createTask")
+    Observable<Status> createTask(@Query("uid") int uid,
+                                  @Query("title") String title,
+                                  @Query("detail") String detail,
+                                  @Query("money") int money,
+                                  @Query("type") String type,
+                                  @Query("total_num") int total_num,
+                                  @Query("end_time") String end_time);
+    //    更新任务：http://111.230.13.139:8080/ServerAndDB/updateTask?tid=3&uid=8&title=test&detail=1234&type=poll&end_time=1577808000000
+    @POST("updateTask")
+    Observable<Status> updateTask(@Query("tid") int tid,
+                                  @Query("uid") int uid,
+                                  @Query("title") String title,
+                                  @Query("detail") String detail,
+                                  @Query("type") String type,
+                                  @Query("end_time") String end_time);
+
+//    接受任务：http://111.230.13.139:8080/ServerAndDB/joinTask?tid=4/uid=1
+    @POST("joinTask")
+    Observable<Status> joinTask(@Query("tid") int tid, @Query("uid") int uid);
+
+//    取消任务：http://111.230.13.139:8080/ServerAndDB/disjoinTask?tid=4&uid=1
+    @POST("disjoinTask")
+    Observable<Status> disjoinTask(@Query("tid") int tid, @Query("uid") int uid);
+
+//   完成任务： http://111.230.13.139:8080/ServerAndDB/endTask?tid=3&uid=9
+    @POST("endTask")
+    Observable<Status> endTask(@Query("tid") int tid, @Query("uid") int uid);
+
+
+//    获取参与任务的用户名单：http://111.230.13.139:8080/ServerAndDB/getJoinUsers?tid=4
+    @POST("getJoinUsers")
+    Observable<UserList> getJoinUsers(@Query("tid") int tid);
 
 
 
@@ -48,6 +93,9 @@ public interface ApiService {
     // 获取该用户参与的所有任务：**http://111.230.13.139:8080/ServerAndDB/getJoinTasks?uid=1
     @POST("getJoinTasks")
     Observable<TaskList> getJoinTasks(@Query("uid") int uid);
+    //   getpublishTasks
+    @POST("getpublishTasks")
+    Observable<TaskList> getpublishTasks(@Query("uid") int uid);
 
     // 添加调查问卷问题：http://111.230.13.139:8080/ServerAndDB/addQuestion?sid=2&qid=5&qtype=choice&qtitle=where&answer_a=guanghzou&answer_b=shanghai&answer_c=shenzhen&answer_d=others
     @POST("addQuestion")

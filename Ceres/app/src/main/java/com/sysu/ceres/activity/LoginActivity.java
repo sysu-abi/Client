@@ -2,20 +2,66 @@ package com.sysu.ceres.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.sysu.ceres.CeresConfig;
 import com.sysu.ceres.R;
+import com.sysu.ceres.http.ApiMethods;
+import com.sysu.ceres.model.Status;
+import com.sysu.ceres.model.Task;
+import com.sysu.ceres.model.TaskList;
+import com.sysu.ceres.observer.MyObserver;
+import com.sysu.ceres.observer.ObserverOnNextListener;
+
+import static android.content.ContentValues.TAG;
 
 public class LoginActivity extends AppCompatActivity {
 
     private boolean login_or_register = true;
+    private String current_user = null;
+    private static final String ARG_USERNAME = "username";
+    private ObserverOnNextListener<Status> getUserlistener = new ObserverOnNextListener<Status>() {
+        @Override
+        public void onNext(Status status) {
+            Log.d(TAG, "onNext: " + status.toString());
+            if (status.getStatus().toString().equals("success")) {
+                CeresConfig.currentUser = status.getUser();
+            } else {
+                CeresConfig.currentUser = null;
+            }
+            setResult(2);
+            finish();
+        }
+    };
 
+    private ObserverOnNextListener<Status> listener = new ObserverOnNextListener<Status>() {
+        @Override
+        public void onNext(Status status) {
+            Log.d(TAG, "onNext: " + status.toString());
+            if (status.getStatus().toString().equals("success")) {
+                current_user = ((TextView)findViewById(R.id.username)).getText().toString();
+                ApiMethods.getUser(new MyObserver<Status>(LoginActivity.this, getUserlistener), current_user);
+                //Intent intent = new Intent();
+                // 获取用户计算后的结果
+                //intent.putExtra(ARG_USERNAME, current_user);
+                //通过intent对象返回结果，必须要调用一个setResult方法，
+                //setResult(resultCode, data);第一个参数表示结果返回码，一般只要大于1就可以，但是
+            } else {
+                current_user = null;
+                CeresConfig.currentUser = null;
+                Toast.makeText(LoginActivity.this,
+                        status.getStatus(), Toast.LENGTH_SHORT).show();
+            }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,10 +122,20 @@ public class LoginActivity extends AppCompatActivity {
                     Toast.makeText(LoginActivity.this,
                             "Password cannot be empty.", Toast.LENGTH_SHORT).show();
                 } else {
+                    String name = username.getText().toString();
+                    String psd = password.getText().toString();
+                    String c_psd = confirm_psw.getText().toString();
+                    String phone = userphone.getText().toString();
+                    String email = useremail.getText().toString();
                     if (login_or_register) { //login
-
+                        ApiMethods.userLogin(new MyObserver<Status>(LoginActivity.this, listener), name, psd);
                     } else { //register
-
+                        if (c_psd.equals(psd)) {
+                            ApiMethods.userRegist(new MyObserver<Status>(LoginActivity.this, listener), name, phone, email, psd);
+                        } else {
+                            Toast.makeText(LoginActivity.this,
+                                    "Password mismatch.", Toast.LENGTH_SHORT).show();
+                        }
                     }
                 }
             }

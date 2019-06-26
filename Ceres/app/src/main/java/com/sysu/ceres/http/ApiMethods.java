@@ -7,6 +7,7 @@ import com.sysu.ceres.model.Survey;
 import com.sysu.ceres.model.SurveyFull;
 import com.sysu.ceres.model.SurveyList;
 import com.sysu.ceres.model.TaskList;
+import com.sysu.ceres.model.UserList;
 
 import io.reactivex.Observable;
 import io.reactivex.Observer;
@@ -31,6 +32,49 @@ public class ApiMethods {
      *
      * @param observer 由调用者传过来的观察者对象
      */
+    public static void userRegist(Observer<Status> observer, String name, String phone, String email, String password) {
+        ApiSubscribe(Api.getApiService().userRigist(name, phone, email, password), observer);
+    }
+
+    public static void userLogin(Observer<Status> observer, String name, String password) {
+        ApiSubscribe(Api.getApiService().userLogin(name, password), observer);
+    }
+
+    public static void getUser(Observer<Status> observer, String name) {
+        ApiSubscribe(Api.getApiService().getUser(name), observer);
+    }
+
+
+    public static void createTask(Observer<Status> observer, int uid,
+                                  String title,
+                                  String detail,
+                                  int money,
+                                  String type,
+                                  int total_num,
+                                  String end_time) {
+        ApiSubscribe(Api.getApiService().createTask(uid, title, detail, money, type, total_num, end_time), observer);
+    }
+
+    public static void updateTask(Observer<Status> observer, int tid, int uid,
+                                  String title,
+                                  String detail,
+                                  String type,
+                                  String end_time) {
+        ApiSubscribe(Api.getApiService().updateTask(tid, uid, title, detail, type, end_time), observer);
+    }
+
+    public static void joinTask(Observer<Status> observer, int tid, int uid) {
+        ApiSubscribe(Api.getApiService().joinTask(tid, uid), observer);
+    }
+
+    public static void disjoinTask(Observer<Status> observer, int tid, int uid) {
+        ApiSubscribe(Api.getApiService().disjoinTask(tid, uid), observer);
+    }
+
+    public static void endTask(Observer<Status> observer, int tid, int uid) {
+        ApiSubscribe(Api.getApiService().endTask(tid, uid), observer);
+    }
+
     public static void getTaskList(Observer<TaskList> observer) {
         ApiSubscribe(Api.getApiService().getTaskList(false), observer);
     }
@@ -42,8 +86,20 @@ public class ApiMethods {
     public static void getTaskListByMoney(Observer<TaskList> observer, String mode) {
         ApiSubscribe(Api.getApiService().getTaskListByMoney(mode, false), observer);
     }
+
     public static void getTaskListByStartTime(Observer<TaskList> observer, String mode) {
         ApiSubscribe(Api.getApiService().getTaskListByStartTime(mode, false), observer);
+    }
+
+    public static void getJoinUsers(Observer<UserList> observer, int tid) {
+        ApiSubscribe(Api.getApiService().getJoinUsers(tid), observer);
+    }
+
+    public static void getJoinTasks(Observer<TaskList> observer, int uid) {
+        ApiSubscribe(Api.getApiService().getJoinTasks(uid), observer);
+    }
+    public static void getPublishTasks(Observer<TaskList> observer, int uid) {
+        ApiSubscribe(Api.getApiService().getpublishTasks(uid), observer);
     }
 
     public static void getMessageList(Observer<MessageList> observer, int tid) {

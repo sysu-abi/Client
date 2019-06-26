@@ -28,6 +28,7 @@ public class TaskDetailActivity extends AppCompatActivity implements MessageFrag
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_task_detail);
         current_task = (Task) getIntent().getSerializableExtra(ARG_CURRENT_TASK);
+        Log.d("Task Detail ", current_task.toString());
         SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(this, getSupportFragmentManager());
         sectionsPagerAdapter.setTask(current_task);
         ViewPager viewPager = findViewById(R.id.view_pager);

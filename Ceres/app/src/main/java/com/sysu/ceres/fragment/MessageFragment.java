@@ -86,7 +86,7 @@ public class MessageFragment extends Fragment {
                 myMessageRecyclerViewAdapter.setList(myMessageList);
             }
         };
-        ApiMethods.getMessageList(new MyObserver<MessageList>(view.getContext(), listener), 3);
+        ApiMethods.getMessageList(new MyObserver<MessageList>(view.getContext(), listener), tid);
 
         // Set the adapter
         if (view != null) {

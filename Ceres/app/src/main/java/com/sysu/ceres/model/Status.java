@@ -7,6 +7,10 @@ public class Status {
     private String log;
     private String status;
     private User user;
+    private String state;
+
+    public String getState() { return state; }
+    public void setState(String value) { this.state = value; }
 
     public User getUser() { return user; }
     public void setUser(User value) { this.user = value; }

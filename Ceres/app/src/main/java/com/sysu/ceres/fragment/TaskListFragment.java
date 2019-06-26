@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.sysu.ceres.CeresConfig;
 import com.sysu.ceres.adapter.MyTaskRecyclerViewAdapter;
 import com.sysu.ceres.R;
 import com.sysu.ceres.http.ApiMethods;
@@ -37,7 +38,7 @@ public class TaskListFragment extends Fragment {
     private List<Task> myTaskList = new ArrayList<>();
     private MyTaskRecyclerViewAdapter myListViewAdapter;
 
-    // 0- default; 1-ddl; 2-money; 3-starttime
+    // 0- default; 1-ddl; 2-money; 3-starttime; 4-myjointask; 5-mypublishtask
     private int getListMethod = 0;
     private String getListOrder = "asc";
     /**
@@ -98,6 +99,12 @@ public class TaskListFragment extends Fragment {
                 break;
             case 3:
                 ApiMethods.getTaskListByStartTime(new MyObserver<TaskList>(view.getContext(), listener), getListOrder);
+                break;
+            case 4:
+                ApiMethods.getJoinTasks(new MyObserver<TaskList>(view.getContext(), listener), CeresConfig.currentUser.getUid().intValue());
+                break;
+            case 5:
+                ApiMethods.getPublishTasks(new MyObserver<TaskList>(view.getContext(), listener), CeresConfig.currentUser.getUid().intValue());
                 break;
             default:
                 ApiMethods.getTaskList(new MyObserver<TaskList>(view.getContext(), listener));

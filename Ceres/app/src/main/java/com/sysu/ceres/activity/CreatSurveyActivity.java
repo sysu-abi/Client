@@ -27,6 +27,7 @@ public class CreatSurveyActivity extends AppCompatActivity {
 
     //Todo
     long tid;
+    private static final String ARG_SURVEY_TID = "task_tid";
 
     private long sid;
     private long qid;
@@ -61,6 +62,10 @@ public class CreatSurveyActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_creat_survey);
+        tid = getIntent().getIntExtra(ARG_SURVEY_TID, -1);
+        if(tid == -1) {
+            Log.d("no tid ", "-1");
+        }
         init();
         clickHandle();
     }
