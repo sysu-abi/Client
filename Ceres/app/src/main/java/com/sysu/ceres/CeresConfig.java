@@ -4,5 +4,5 @@ import com.sysu.ceres.model.User;
 
 public class CeresConfig {
     public static User currentUser = null;
-
+    public static String cookie = null;
 }

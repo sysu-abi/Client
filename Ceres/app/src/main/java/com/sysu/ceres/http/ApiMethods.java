@@ -51,28 +51,30 @@ public class ApiMethods {
                                   int money,
                                   String type,
                                   int total_num,
-                                  String end_time) {
-        ApiSubscribe(Api.getApiService().createTask(uid, title, detail, money, type, total_num, end_time), observer);
+                                  String end_time,
+                                  String cookie) {
+        ApiSubscribe(Api.getApiService().createTask(uid, title, detail, money, type, total_num, end_time, cookie), observer);
     }
 
     public static void updateTask(Observer<Status> observer, int tid, int uid,
                                   String title,
                                   String detail,
                                   String type,
-                                  String end_time) {
-        ApiSubscribe(Api.getApiService().updateTask(tid, uid, title, detail, type, end_time), observer);
+                                  String end_time,
+                                  String cookie) {
+        ApiSubscribe(Api.getApiService().updateTask(tid, uid, title, detail, type, end_time, cookie), observer);
     }
 
-    public static void joinTask(Observer<Status> observer, int tid, int uid) {
-        ApiSubscribe(Api.getApiService().joinTask(tid, uid), observer);
+    public static void joinTask(Observer<Status> observer, int tid, int uid, String cookie) {
+        ApiSubscribe(Api.getApiService().joinTask(tid, uid, cookie), observer);
     }
 
-    public static void disjoinTask(Observer<Status> observer, int tid, int uid) {
-        ApiSubscribe(Api.getApiService().disjoinTask(tid, uid), observer);
+    public static void disjoinTask(Observer<Status> observer, int tid, int uid, String cookie) {
+        ApiSubscribe(Api.getApiService().disjoinTask(tid, uid, cookie), observer);
     }
 
-    public static void endTask(Observer<Status> observer, int tid, int uid) {
-        ApiSubscribe(Api.getApiService().endTask(tid, uid), observer);
+    public static void endTask(Observer<Status> observer, int tid, int uid, String cookie) {
+        ApiSubscribe(Api.getApiService().endTask(tid, uid, cookie), observer);
     }
 
     public static void getTaskList(Observer<TaskList> observer) {
@@ -95,11 +97,11 @@ public class ApiMethods {
         ApiSubscribe(Api.getApiService().getJoinUsers(tid), observer);
     }
 
-    public static void getJoinTasks(Observer<TaskList> observer, int uid) {
-        ApiSubscribe(Api.getApiService().getJoinTasks(uid), observer);
+    public static void getJoinTasks(Observer<TaskList> observer, int uid, String cookie) {
+        ApiSubscribe(Api.getApiService().getJoinTasks(uid, cookie), observer);
     }
-    public static void getPublishTasks(Observer<TaskList> observer, int uid) {
-        ApiSubscribe(Api.getApiService().getpublishTasks(uid), observer);
+    public static void getPublishTasks(Observer<TaskList> observer, int uid, String cookie) {
+        ApiSubscribe(Api.getApiService().getpublishTasks(uid, cookie), observer);
     }
 
     public static void getMessageList(Observer<MessageList> observer, int tid) {

@@ -101,10 +101,12 @@ public class TaskListFragment extends Fragment {
                 ApiMethods.getTaskListByStartTime(new MyObserver<TaskList>(view.getContext(), listener), getListOrder);
                 break;
             case 4:
-                ApiMethods.getJoinTasks(new MyObserver<TaskList>(view.getContext(), listener), CeresConfig.currentUser.getUid().intValue());
+                ApiMethods.getJoinTasks(new MyObserver<TaskList>(view.getContext(), listener),
+                        CeresConfig.currentUser.getUid().intValue(), CeresConfig.cookie);
                 break;
             case 5:
-                ApiMethods.getPublishTasks(new MyObserver<TaskList>(view.getContext(), listener), CeresConfig.currentUser.getUid().intValue());
+                ApiMethods.getPublishTasks(new MyObserver<TaskList>(view.getContext(), listener),
+                        CeresConfig.currentUser.getUid().intValue(), CeresConfig.cookie);
                 break;
             default:
                 ApiMethods.getTaskList(new MyObserver<TaskList>(view.getContext(), listener));

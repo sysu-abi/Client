@@ -42,18 +42,32 @@ public class LoginActivity extends AppCompatActivity {
         }
     };
 
-    private ObserverOnNextListener<Status> listener = new ObserverOnNextListener<Status>() {
+    private ObserverOnNextListener<Status> loginlistener = new ObserverOnNextListener<Status>() {
         @Override
         public void onNext(Status status) {
             Log.d(TAG, "onNext: " + status.toString());
-            if (status.getStatus().toString().equals("success")) {
+            if (status.getStatus().equals("success")) {
                 current_user = ((TextView)findViewById(R.id.username)).getText().toString();
+                CeresConfig.cookie = status.getCookie();
+                Log.d("cookie ", CeresConfig.cookie);
                 ApiMethods.getUser(new MyObserver<Status>(LoginActivity.this, getUserlistener), current_user);
-                //Intent intent = new Intent();
-                // 获取用户计算后的结果
-                //intent.putExtra(ARG_USERNAME, current_user);
-                //通过intent对象返回结果，必须要调用一个setResult方法，
-                //setResult(resultCode, data);第一个参数表示结果返回码，一般只要大于1就可以，但是
+            } else {
+                current_user = null;
+                CeresConfig.currentUser = null;
+                Toast.makeText(LoginActivity.this,
+                        status.getStatus(), Toast.LENGTH_SHORT).show();
+            }
+        }
+    };
+    private ObserverOnNextListener<Status> registlistener = new ObserverOnNextListener<Status>() {
+        @Override
+        public void onNext(Status status) {
+            Log.d(TAG, "onNext: " + status.toString());
+            if (status.getStatus().equals("success")) {
+                final Button clear_btn = findViewById(R.id.clear_btn);
+                final RadioGroup radio_group = findViewById(R.id.radio_group);
+                clear_btn.performClick();
+                radio_group.check(R.id.radio_login);
             } else {
                 current_user = null;
                 CeresConfig.currentUser = null;
@@ -128,10 +142,10 @@ public class LoginActivity extends AppCompatActivity {
                     String phone = userphone.getText().toString();
                     String email = useremail.getText().toString();
                     if (login_or_register) { //login
-                        ApiMethods.userLogin(new MyObserver<Status>(LoginActivity.this, listener), name, psd);
+                        ApiMethods.userLogin(new MyObserver<Status>(LoginActivity.this, loginlistener), name, psd);
                     } else { //register
                         if (c_psd.equals(psd)) {
-                            ApiMethods.userRegist(new MyObserver<Status>(LoginActivity.this, listener), name, phone, email, psd);
+                            ApiMethods.userRegist(new MyObserver<Status>(LoginActivity.this, registlistener), name, phone, email, psd);
                         } else {
                             Toast.makeText(LoginActivity.this,
                                     "Password mismatch.", Toast.LENGTH_SHORT).show();

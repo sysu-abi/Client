@@ -47,6 +47,7 @@ public class EditTaskActivity extends AppCompatActivity {
             Intent intent = new Intent(EditTaskActivity.this, CreatSurveyActivity.class);
             intent.putExtra(ARG_SURVEY_TID, tid);
             startActivity(intent);
+            finish();
         }
     };
 
@@ -59,7 +60,10 @@ public class EditTaskActivity extends AppCompatActivity {
                         status.getState(), Toast.LENGTH_SHORT).show();
                 Log.d("task type ", et_task_type.getText().toString());
                 if (current_task == null && et_task_type.getText().toString().equals("survey")) { // 问卷
-                    ApiMethods.getPublishTasks(new MyObserver<TaskList>(EditTaskActivity.this, getNewTasklistener), CeresConfig.currentUser.getUid().intValue());
+                    ApiMethods.getPublishTasks(new MyObserver<TaskList>(EditTaskActivity.this, getNewTasklistener),
+                            CeresConfig.currentUser.getUid().intValue(), CeresConfig.cookie);
+                } else {
+                    finish();
                 }
             } else {
                 Toast.makeText(EditTaskActivity.this,
@@ -110,7 +114,8 @@ public class EditTaskActivity extends AppCompatActivity {
                     String type = et_task_type.getText().toString();
                     int total_num = Integer.parseInt(et_task_total_num.getText().toString());
                     String end_time = et_task_end_time.getText().toString();
-                    ApiMethods.createTask(new MyObserver<Status>(EditTaskActivity.this, listener), CeresConfig.currentUser.getUid().intValue(), title, detail, money, type, total_num, end_time);
+                    ApiMethods.createTask(new MyObserver<Status>(EditTaskActivity.this, listener),
+                            CeresConfig.currentUser.getUid().intValue(), title, detail, money, type, total_num, end_time, CeresConfig.cookie);
                 }
             }
         });
@@ -128,7 +133,8 @@ public class EditTaskActivity extends AppCompatActivity {
                     String detail = et_task_detail.getText().toString();
                     String type = current_task.getType();
                     String end_time = et_task_end_time.getText().toString();
-                    ApiMethods.updateTask(new MyObserver<Status>(EditTaskActivity.this, listener), current_task.getTid().intValue(), CeresConfig.currentUser.getUid().intValue(), title, detail, type, end_time);
+                    ApiMethods.updateTask(new MyObserver<Status>(EditTaskActivity.this, listener),
+                            current_task.getTid().intValue(), CeresConfig.currentUser.getUid().intValue(), title, detail, type, end_time, CeresConfig.cookie);
                 }
             }
         });

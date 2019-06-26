@@ -35,7 +35,8 @@ public interface ApiService {
                                   @Query("money") int money,
                                   @Query("type") String type,
                                   @Query("total_num") int total_num,
-                                  @Query("end_time") String end_time);
+                                  @Query("end_time") String end_time,
+                                  @Query("cookie") String cookie);
     //    更新任务：http://111.230.13.139:8080/ServerAndDB/updateTask?tid=3&uid=8&title=test&detail=1234&type=poll&end_time=1577808000000
     @POST("updateTask")
     Observable<Status> updateTask(@Query("tid") int tid,
@@ -43,19 +44,20 @@ public interface ApiService {
                                   @Query("title") String title,
                                   @Query("detail") String detail,
                                   @Query("type") String type,
-                                  @Query("end_time") String end_time);
+                                  @Query("end_time") String end_time,
+                                  @Query("cookie") String cookie);
 
 //    接受任务：http://111.230.13.139:8080/ServerAndDB/joinTask?tid=4/uid=1
     @POST("joinTask")
-    Observable<Status> joinTask(@Query("tid") int tid, @Query("uid") int uid);
+    Observable<Status> joinTask(@Query("tid") int tid, @Query("uid") int uid, @Query("cookie") String cookie);
 
 //    取消任务：http://111.230.13.139:8080/ServerAndDB/disjoinTask?tid=4&uid=1
     @POST("disjoinTask")
-    Observable<Status> disjoinTask(@Query("tid") int tid, @Query("uid") int uid);
+    Observable<Status> disjoinTask(@Query("tid") int tid, @Query("uid") int uid, @Query("cookie") String cookie);
 
 //   完成任务： http://111.230.13.139:8080/ServerAndDB/endTask?tid=3&uid=9
     @POST("endTask")
-    Observable<Status> endTask(@Query("tid") int tid, @Query("uid") int uid);
+    Observable<Status> endTask(@Query("tid") int tid, @Query("uid") int uid, @Query("cookie") String cookie);
 
 
 //    获取参与任务的用户名单：http://111.230.13.139:8080/ServerAndDB/getJoinUsers?tid=4
@@ -92,10 +94,10 @@ public interface ApiService {
 
     // 获取该用户参与的所有任务：**http://111.230.13.139:8080/ServerAndDB/getJoinTasks?uid=1
     @POST("getJoinTasks")
-    Observable<TaskList> getJoinTasks(@Query("uid") int uid);
+    Observable<TaskList> getJoinTasks(@Query("uid") int uid, @Query("cookie") String cookie);
     //   getpublishTasks
     @POST("getpublishTasks")
-    Observable<TaskList> getpublishTasks(@Query("uid") int uid);
+    Observable<TaskList> getpublishTasks(@Query("uid") int uid, @Query("cookie") String cookie);
 
     // 添加调查问卷问题：http://111.230.13.139:8080/ServerAndDB/addQuestion?sid=2&qid=5&qtype=choice&qtitle=where&answer_a=guanghzou&answer_b=shanghai&answer_c=shenzhen&answer_d=others
     @POST("addQuestion")
