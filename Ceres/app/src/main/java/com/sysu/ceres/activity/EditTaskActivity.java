@@ -131,13 +131,8 @@ public class EditTaskActivity extends AppCompatActivity {
                     String type = et_task_type.getText().toString();
                     int total_num = Integer.parseInt(et_task_total_num.getText().toString());
                     String end_time = et_task_end_time.getText().toString();
-<<<<<<< HEAD
-                    Log.d("create", "click create btn");
-                    ApiMethods.createTask(new MyObserver<Status>(EditTaskActivity.this, listener), CeresConfig.currentUser.getUid().intValue(), title, detail, money, type, total_num, end_time);
-=======
                     ApiMethods.createTask(new MyObserver<Status>(EditTaskActivity.this, listener),
                             CeresConfig.currentUser.getUid().intValue(), title, detail, money, type, total_num, end_time);
->>>>>>> db3f7a409643012a739ee6196e544753c7867388
                 }
             }
         });
