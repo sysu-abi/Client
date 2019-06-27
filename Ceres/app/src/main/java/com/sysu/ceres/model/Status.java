@@ -4,10 +4,14 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 public class Status {
+    private String cookie;
     private String log;
     private String status;
     private User user;
     private String state;
+
+    public String getCookie() { return cookie; }
+    public void setCookie(String value) { this.cookie = value; }
 
     public String getState() { return state; }
     public void setState(String value) { this.state = value; }

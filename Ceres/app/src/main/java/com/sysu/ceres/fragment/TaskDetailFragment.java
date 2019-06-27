@@ -22,6 +22,7 @@ import com.sysu.ceres.activity.EditTaskActivity;
 import com.sysu.ceres.activity.LoginActivity;
 import com.sysu.ceres.http.ApiMethods;
 import com.sysu.ceres.model.Status;
+import com.sysu.ceres.model.SurveyList;
 import com.sysu.ceres.model.Task;
 import com.sysu.ceres.model.UserList;
 import com.sysu.ceres.observer.MyObserver;
@@ -71,13 +72,23 @@ public class TaskDetailFragment extends Fragment {
                 disjoin_btn.setVisibility(View.VISIBLE);
                 finish_btn.setVisibility(View.GONE);
                 join_btn.setVisibility(View.GONE);
+                get_statistic_btn.setVisibility(View.GONE);
             } else {
                 show_status = 0;
                 edit_btn.setVisibility(View.GONE);
                 disjoin_btn.setVisibility(View.GONE);
                 finish_btn.setVisibility(View.GONE);
                 join_btn.setVisibility(View.VISIBLE);
+                get_statistic_btn.setVisibility(View.GONE);
             }
+        }
+    };
+
+    ObserverOnNextListener<SurveyList> surveyList_listener = new ObserverOnNextListener<SurveyList>() {
+        @Override
+        public void onNext(SurveyList surveyList) {
+            Log.d(TAG, "onNext: " + surveyList.getStatus());
+            long sid = surveyList.getSurvey().get(0).getSid();
         }
     };
 
@@ -150,8 +161,8 @@ public class TaskDetailFragment extends Fragment {
                 break;
             case 1:
                 edit_btn.setVisibility(View.GONE);
-                disjoin_btn.setVisibility(View.GONE);
-                finish_btn.setVisibility(View.VISIBLE);
+                disjoin_btn.setVisibility(View.VISIBLE);
+                finish_btn.setVisibility(View.GONE);
                 join_btn.setVisibility(View.GONE);
                 get_statistic_btn.setVisibility(View.GONE);
                 break;
@@ -191,14 +202,16 @@ public class TaskDetailFragment extends Fragment {
         disjoin_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ApiMethods.disjoinTask(new MyObserver<Status>(root.getContext(), listener), currentTask.getTid().intValue(), CeresConfig.currentUser.getUid().intValue());
+                ApiMethods.disjoinTask(new MyObserver<Status>(root.getContext(), listener),
+                        currentTask.getTid().intValue(), CeresConfig.currentUser.getUid().intValue());
             }
         });
 
         finish_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ApiMethods.endTask(new MyObserver<Status>(root.getContext(), listener), currentTask.getTid().intValue(), CeresConfig.currentUser.getUid().intValue());
+                ApiMethods.endTask(new MyObserver<Status>(root.getContext(), listener),
+                        currentTask.getTid().intValue(), CeresConfig.currentUser.getUid().intValue());
             }
         });
 
@@ -206,7 +219,8 @@ public class TaskDetailFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 if (CeresConfig.currentUser != null) {
-                    ApiMethods.joinTask(new MyObserver<Status>(root.getContext(), listener), currentTask.getTid().intValue(), CeresConfig.currentUser.getUid().intValue());
+                    ApiMethods.joinTask(new MyObserver<Status>(root.getContext(), listener),
+                            currentTask.getTid().intValue(), CeresConfig.currentUser.getUid().intValue());
                 } else {
                     Intent intent = new Intent();
                     intent.setClass(getActivity(), LoginActivity.class);
