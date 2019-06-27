@@ -61,7 +61,7 @@ public class EditTaskActivity extends AppCompatActivity {
                 Log.d("task type ", et_task_type.getText().toString());
                 if (current_task == null && et_task_type.getText().toString().equals("survey")) { // 问卷
                     ApiMethods.getPublishTasks(new MyObserver<TaskList>(EditTaskActivity.this, getNewTasklistener),
-                            CeresConfig.currentUser.getUid().intValue(), CeresConfig.cookie);
+                            CeresConfig.currentUser.getUid().intValue());
                 } else {
                     finish();
                 }
@@ -115,7 +115,7 @@ public class EditTaskActivity extends AppCompatActivity {
                     int total_num = Integer.parseInt(et_task_total_num.getText().toString());
                     String end_time = et_task_end_time.getText().toString();
                     ApiMethods.createTask(new MyObserver<Status>(EditTaskActivity.this, listener),
-                            CeresConfig.currentUser.getUid().intValue(), title, detail, money, type, total_num, end_time, CeresConfig.cookie);
+                            CeresConfig.currentUser.getUid().intValue(), title, detail, money, type, total_num, end_time);
                 }
             }
         });
@@ -134,7 +134,7 @@ public class EditTaskActivity extends AppCompatActivity {
                     String type = current_task.getType();
                     String end_time = et_task_end_time.getText().toString();
                     ApiMethods.updateTask(new MyObserver<Status>(EditTaskActivity.this, listener),
-                            current_task.getTid().intValue(), CeresConfig.currentUser.getUid().intValue(), title, detail, type, end_time, CeresConfig.cookie);
+                            current_task.getTid().intValue(), CeresConfig.currentUser.getUid().intValue(), title, detail, type, end_time);
                 }
             }
         });

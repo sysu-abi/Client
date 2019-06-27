@@ -203,7 +203,7 @@ public class TaskDetailFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 ApiMethods.disjoinTask(new MyObserver<Status>(root.getContext(), listener),
-                        currentTask.getTid().intValue(), CeresConfig.currentUser.getUid().intValue(), CeresConfig.cookie);
+                        currentTask.getTid().intValue(), CeresConfig.currentUser.getUid().intValue());
             }
         });
 
@@ -211,7 +211,7 @@ public class TaskDetailFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 ApiMethods.endTask(new MyObserver<Status>(root.getContext(), listener),
-                        currentTask.getTid().intValue(), CeresConfig.currentUser.getUid().intValue(), CeresConfig.cookie);
+                        currentTask.getTid().intValue(), CeresConfig.currentUser.getUid().intValue());
             }
         });
 
@@ -220,7 +220,7 @@ public class TaskDetailFragment extends Fragment {
             public void onClick(View view) {
                 if (CeresConfig.currentUser != null) {
                     ApiMethods.joinTask(new MyObserver<Status>(root.getContext(), listener),
-                            currentTask.getTid().intValue(), CeresConfig.currentUser.getUid().intValue(), CeresConfig.cookie);
+                            currentTask.getTid().intValue(), CeresConfig.currentUser.getUid().intValue());
                 } else {
                     Intent intent = new Intent();
                     intent.setClass(getActivity(), LoginActivity.class);
