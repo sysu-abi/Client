@@ -34,14 +34,14 @@ public class DoSurveyActivity extends AppCompatActivity {
     private List<QuestionList> questionLists;
     private int ques_num;
 
-    final TextView question_id = findViewById(R.id.do_survey_qid);
-    final TextView qtitle = findViewById(R.id.do_survey_ques_content);
-    final RadioGroup radio_group = findViewById(R.id.do_survey_radio_group);
-    final RadioButton answer_a = findViewById(R.id.do_survey_answer_a);
-    final RadioButton answer_b = findViewById(R.id.do_survey_answer_b);
-    final RadioButton answer_c = findViewById(R.id.do_survey_answer_c);
-    final RadioButton answer_d = findViewById(R.id.do_survey_answer_d);
-    final Button submit_btn = findViewById(R.id.do_survey_submit_btn);
+    TextView question_id;
+    TextView qtitle;
+    RadioGroup radio_group;
+    RadioButton answer_a;
+    RadioButton answer_b;
+    RadioButton answer_c;
+    RadioButton answer_d;
+    Button submit_btn;
 
     ObserverOnNextListener<SurveyFull> survey_full_listener = new ObserverOnNextListener<SurveyFull>() {
         @Override
@@ -71,6 +71,15 @@ public class DoSurveyActivity extends AppCompatActivity {
     }
 
     void init() {
+        question_id = findViewById(R.id.do_survey_qid);
+        qtitle = findViewById(R.id.do_survey_ques_content);
+        radio_group = findViewById(R.id.do_survey_radio_group);
+        answer_a = findViewById(R.id.do_survey_answer_a);
+        answer_b = findViewById(R.id.do_survey_answer_b);
+        answer_c = findViewById(R.id.do_survey_answer_c);
+        answer_d = findViewById(R.id.do_survey_answer_d);
+        submit_btn = findViewById(R.id.do_survey_submit_btn);
+
         qid = 1;
         ques_num = questionLists.size();
         submit_btn.setText("NEXT");

@@ -12,7 +12,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+<<<<<<< HEAD
         <activity android:name=".activity.EditUserActivity"></activity>
+=======
+        <activity android:name=".activity.StatisticListActivity"></activity>
+>>>>>>> 93db3ca12f8f7d0237576f8ab1333a155f09bcb8
         <activity android:name=".activity.DoSurveyActivity" />
         <activity android:name=".activity.CreatSurveyActivity" />
         <activity android:name=".activity.CreateMessageActivity" />

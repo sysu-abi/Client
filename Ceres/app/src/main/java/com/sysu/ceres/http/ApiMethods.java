@@ -2,6 +2,7 @@ package com.sysu.ceres.http;
 
 import com.sysu.ceres.model.MessageList;
 import com.sysu.ceres.model.QuestionList;
+import com.sysu.ceres.model.StatisticList;
 import com.sysu.ceres.model.Status;
 import com.sysu.ceres.model.Survey;
 import com.sysu.ceres.model.SurveyFull;
@@ -139,6 +140,10 @@ public class ApiMethods {
 
     public static void updateAnswers(Observer<Status> observer, long sid, long qid, String answer) {
         ApiSubscribe(Api.getApiService().updateAnswers(sid, qid, answer), observer);
+    }
+
+    public static void getStatisticsList(Observer<StatisticList> observer, long sid) {
+        ApiSubscribe(Api.getApiService().getStatisticsList(sid), observer);
     }
 
 }

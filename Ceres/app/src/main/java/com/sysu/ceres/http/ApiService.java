@@ -3,6 +3,7 @@ package com.sysu.ceres.http;
 import com.sysu.ceres.model.Message;
 import com.sysu.ceres.model.MessageList;
 import com.sysu.ceres.model.QuestionList;
+import com.sysu.ceres.model.StatisticList;
 import com.sysu.ceres.model.Status;
 import com.sysu.ceres.model.Survey;
 import com.sysu.ceres.model.SurveyFull;
@@ -128,5 +129,9 @@ public interface ApiService {
     // 更新调查问卷选项信息 http://111.230.13.139:8080/ServerAndDB/updateAnswers?sid=2&qid=4&answer=A
     @POST("updateAnswers")
     Observable<Status> updateAnswers(@Query("sid") long sid, @Query("qid") long qid, @Query("answer") String answer);
+
+    // 获取调查问卷统计数据 http://111.230.13.139:8080/ServerAndDB/getAnswers?sid=3
+    @POST("getAnswers")
+    Observable<StatisticList> getStatisticsList(@Query("sid") long sid);
 
 }
