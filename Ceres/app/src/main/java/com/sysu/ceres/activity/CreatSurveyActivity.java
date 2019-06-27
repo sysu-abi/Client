@@ -89,11 +89,11 @@ public class CreatSurveyActivity extends AppCompatActivity {
         choice_a.setText("");
         choice_a.setHint("Choice A");
         choice_b.setText("");
-        choice_a.setHint("Choice B");
+        choice_b.setHint("Choice B");
         choice_c.setText("");
-        choice_a.setHint("Choice C");
+        choice_c.setHint("Choice C");
         choice_d.setText("");
-        choice_a.setHint("Choice D");
+        choice_d.setHint("Choice D");
     }
 
     void clickHandle() {
