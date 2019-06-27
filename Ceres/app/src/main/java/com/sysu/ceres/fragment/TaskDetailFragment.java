@@ -10,18 +10,15 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.Nullable;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
 
 import com.sysu.ceres.CeresConfig;
 import com.sysu.ceres.R;
 import com.sysu.ceres.activity.DoSurveyActivity;
 import com.sysu.ceres.activity.EditTaskActivity;
 import com.sysu.ceres.activity.LoginActivity;
-import com.sysu.ceres.http.Api;
+import com.sysu.ceres.activity.StatisticListActivity;
 import com.sysu.ceres.http.ApiMethods;
 import com.sysu.ceres.model.Status;
 import com.sysu.ceres.model.SurveyList;
@@ -42,7 +39,7 @@ public class TaskDetailFragment extends Fragment {
 
     private static final String ARG_CURRENT_TASK = "current_task";
     private static final String ARG_SURVEY_SID = "survey_sid";
-    //0-未参与；1-参与；2-发布者; 3-发布者带问卷
+    //0-未参与；1-参与；2-发布者; 3-发布者带问卷; 4-发布者finish; 5-发布者finish带问卷
     private int show_status = 0;
 
     TextView task_title;
@@ -83,19 +80,10 @@ public class TaskDetailFragment extends Fragment {
             Log.d(TAG, "onNext: " + userlist.toString());
             if (userlist.isJointUser(CeresConfig.currentUser.getUid())) {
                 show_status = 1;
-                edit_btn.setVisibility(View.GONE);
-                disjoin_btn.setVisibility(View.VISIBLE);
-                finish_btn.setVisibility(View.GONE);
-                join_btn.setVisibility(View.GONE);
-                get_statistic_btn.setVisibility(View.GONE);
             } else {
                 show_status = 0;
-                edit_btn.setVisibility(View.GONE);
-                disjoin_btn.setVisibility(View.GONE);
-                finish_btn.setVisibility(View.GONE);
-                join_btn.setVisibility(View.VISIBLE);
-                get_statistic_btn.setVisibility(View.GONE);
             }
+            refreshBtnVisibility();
         }
     };
 
@@ -105,9 +93,15 @@ public class TaskDetailFragment extends Fragment {
             Log.d(TAG, "onNext: " + surveyList.getStatus());
             if (surveyList.getStatus().equals("success") && !surveyList.getSurvey().isEmpty()) {
                 long sid = surveyList.getSurvey().get(0).getSid();
-                Intent intent = new Intent(getActivity(), DoSurveyActivity.class);
-                intent.putExtra(ARG_SURVEY_SID, sid);
-                startActivity(intent);
+                if (show_status == 0) { //未参与 -> doSurvey
+                    Intent intent = new Intent(getActivity(), DoSurveyActivity.class);
+                    intent.putExtra(ARG_SURVEY_SID, sid);
+                    startActivity(intent);
+                } else if (show_status == 3) { // 发布者带问卷 -> getStatistics
+                    Intent intent = new Intent(getActivity(), StatisticListActivity.class);
+                    intent.putExtra(ARG_SURVEY_SID, sid);
+                    startActivity(intent);
+                }
             }
         }
     };
@@ -142,8 +136,12 @@ public class TaskDetailFragment extends Fragment {
         }
         if (CeresConfig.currentUser == null) {
             show_status = 0; //未参与
-        } else if (currentTask.getUid().equals(CeresConfig.currentUser.getUid())){
-            show_status = currentTask.getType() == "survey" ? 3 : 2; // 发布者
+        } else if (currentTask.getUid().equals(CeresConfig.currentUser.getUid())){ // 发布者
+            if (currentTask.getState().equals("finished")) {
+                show_status = currentTask.getType().equals("survey") ? 5 : 4;
+            } else {
+                show_status = currentTask.getType().equals("survey") ? 3 : 2;
+            }
         } else {
             ApiMethods.getJoinUsers(new MyObserver<UserList>(getActivity(), getJoinUserlistener), currentTask.getTid().intValue());
         }
@@ -160,6 +158,60 @@ public class TaskDetailFragment extends Fragment {
         task_start_time.setText("Start Time: " + time.toString());
         time = new Timestamp(currentTask.getEndTime());
         task_end_time.setText("End Time: " + time.toString());
+    }
+
+    void refreshBtnVisibility(){
+        switch (show_status) {
+            case 0:
+                edit_btn.setVisibility(View.GONE);
+                disjoin_btn.setVisibility(View.GONE);
+                finish_btn.setVisibility(View.GONE);
+                join_btn.setVisibility(View.VISIBLE);
+                get_statistic_btn.setVisibility(View.GONE);
+                break;
+            case 1:
+                edit_btn.setVisibility(View.GONE);
+                disjoin_btn.setVisibility(View.VISIBLE);
+                finish_btn.setVisibility(View.GONE);
+                join_btn.setVisibility(View.GONE);
+                get_statistic_btn.setVisibility(View.GONE);
+                break;
+            case 2:
+                edit_btn.setVisibility(View.VISIBLE);
+                finish_btn.setVisibility(View.VISIBLE);
+                disjoin_btn.setVisibility(View.GONE);
+                join_btn.setVisibility(View.GONE);
+                get_statistic_btn.setVisibility(View.GONE);
+                break;
+            case 3:
+                edit_btn.setVisibility(View.VISIBLE);
+                finish_btn.setVisibility(View.VISIBLE);
+                disjoin_btn.setVisibility(View.GONE);
+                join_btn.setVisibility(View.GONE);
+                get_statistic_btn.setVisibility(View.VISIBLE);
+                break;
+            case 4:
+                edit_btn.setVisibility(View.GONE);
+                finish_btn.setVisibility(View.GONE);
+                disjoin_btn.setVisibility(View.GONE);
+                join_btn.setVisibility(View.GONE);
+                get_statistic_btn.setVisibility(View.GONE);
+                break;
+            case 5:
+                edit_btn.setVisibility(View.GONE);
+                finish_btn.setVisibility(View.GONE);
+                disjoin_btn.setVisibility(View.GONE);
+                join_btn.setVisibility(View.GONE);
+                get_statistic_btn.setVisibility(View.VISIBLE);
+                break;
+            default:
+                edit_btn.setVisibility(View.GONE);
+                disjoin_btn.setVisibility(View.GONE);
+                finish_btn.setVisibility(View.GONE);
+                join_btn.setVisibility(View.VISIBLE);
+                get_statistic_btn.setVisibility(View.GONE);
+                break;
+        }
     }
 
     @Override
@@ -208,43 +260,7 @@ public class TaskDetailFragment extends Fragment {
 
         //Log.d("current task uid: " , currentTask.getUid().toString());
         //Log.d("user: ", CeresConfig.currentUser.getUid().toString());
-
-        switch (show_status) {
-            case 0:
-                edit_btn.setVisibility(View.GONE);
-                disjoin_btn.setVisibility(View.GONE);
-                finish_btn.setVisibility(View.GONE);
-                join_btn.setVisibility(View.VISIBLE);
-                get_statistic_btn.setVisibility(View.GONE);
-                break;
-            case 1:
-                edit_btn.setVisibility(View.GONE);
-                disjoin_btn.setVisibility(View.VISIBLE);
-                finish_btn.setVisibility(View.GONE);
-                join_btn.setVisibility(View.GONE);
-                get_statistic_btn.setVisibility(View.GONE);
-                break;
-            case 2:
-                edit_btn.setVisibility(View.VISIBLE);
-                finish_btn.setVisibility(View.VISIBLE);
-                disjoin_btn.setVisibility(View.GONE);
-                join_btn.setVisibility(View.GONE);
-                get_statistic_btn.setVisibility(View.GONE);
-                break;
-            case 3:
-                edit_btn.setVisibility(View.VISIBLE);
-                finish_btn.setVisibility(View.VISIBLE);
-                disjoin_btn.setVisibility(View.GONE);
-                join_btn.setVisibility(View.GONE);
-                get_statistic_btn.setVisibility(View.VISIBLE);
-            default:
-                edit_btn.setVisibility(View.GONE);
-                disjoin_btn.setVisibility(View.GONE);
-                finish_btn.setVisibility(View.GONE);
-                join_btn.setVisibility(View.VISIBLE);
-                get_statistic_btn.setVisibility(View.GONE);
-                break;
-        }
+        refreshBtnVisibility();
 
         edit_btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -294,7 +310,7 @@ public class TaskDetailFragment extends Fragment {
         get_statistic_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //TODO
+                ApiMethods.getSurveyList(new MyObserver<SurveyList>(root.getContext(), surveyList_listener), currentTask.getTid());
             }
         });
 

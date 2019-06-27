@@ -26,7 +26,7 @@ import java.util.List;
 import static android.content.ContentValues.TAG;
 
 public class DoSurveyActivity extends AppCompatActivity {
-
+    private static final String ARG_SURVEY_SID = "survey_sid";
     //todo
     long sid;
     int qid;
@@ -65,6 +65,10 @@ public class DoSurveyActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_do_survey);
+        sid = getIntent().getIntExtra(ARG_SURVEY_SID, -1);
+        if(sid == -1) {
+            Log.d("no sid ", "-1");
+        }
         init();
         radioHandle();
         clickHandle();
