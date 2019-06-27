@@ -36,7 +36,7 @@ public class MyStatisticsRecyclerViewAdapter extends RecyclerView.Adapter<MyStat
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
-        holder.question_number.setText(String.valueOf(mValues.get(position).getQid()));
+        holder.question_number.setText("Question " + String.valueOf(mValues.get(position).getQid()) + ".");
         holder.statistic_answer_a.setText(String.valueOf(mValues.get(position).getCountA()));
         holder.statistic_answer_b.setText(String.valueOf(mValues.get(position).getCountB()));
         holder.statistic_answer_c.setText(String.valueOf(mValues.get(position).getCountC()));
