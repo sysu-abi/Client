@@ -32,6 +32,7 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
     public void setTask(Task item) {
         current_task = item;
+        notifyDataSetChanged();
     }
 
 

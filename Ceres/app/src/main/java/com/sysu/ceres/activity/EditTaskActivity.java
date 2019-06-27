@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import com.sysu.ceres.CeresConfig;
 import com.sysu.ceres.R;
+import com.sysu.ceres.http.Api;
 import com.sysu.ceres.http.ApiMethods;
 import com.sysu.ceres.model.Status;
 import com.sysu.ceres.model.Task;
@@ -38,16 +39,32 @@ public class EditTaskActivity extends AppCompatActivity {
     Button btn_task_create;
     Button btn_task_edit;
 
+    int tid;
+
+    private ObserverOnNextListener<Status> createSurveylistener = new ObserverOnNextListener<Status>() {
+        @Override
+        public void onNext(Status status) {
+            Log.d(TAG, "onNext: " + status.toString());
+            if (status.getStatus().equals("success")) {
+                Intent intent = new Intent(EditTaskActivity.this, CreatSurveyActivity.class);
+                intent.putExtra(ARG_SURVEY_TID, tid);
+                startActivity(intent);
+                finish();
+            } else {
+                Toast.makeText(EditTaskActivity.this,
+                        status.getState(), Toast.LENGTH_SHORT).show();
+            }
+        }
+    };
+
+
     private ObserverOnNextListener<TaskList> getNewTasklistener = new ObserverOnNextListener<TaskList>() {
         @Override
         public void onNext(TaskList tasklist) {
             Log.d(TAG, "onNext: " + tasklist.toString());
             List<Task> myTaskList = tasklist.getTaskList();
-            int tid = myTaskList.get(myTaskList.size() - 1).getTid().intValue();
-            Intent intent = new Intent(EditTaskActivity.this, CreatSurveyActivity.class);
-            intent.putExtra(ARG_SURVEY_TID, tid);
-            startActivity(intent);
-            finish();
+            tid = myTaskList.get(myTaskList.size() - 1).getTid().intValue();
+            ApiMethods.createSurvey(new MyObserver<Status>(EditTaskActivity.this, createSurveylistener), tid);
         }
     };
 

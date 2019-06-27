@@ -86,9 +86,11 @@ public class MainActivity extends AppCompatActivity
         super.onResume();
         if (CeresConfig.currentUser != null) {
             current_user = CeresConfig.currentUser.getName();
-            BottomNavigationView navView = findViewById(R.id.nav_view);
-            navView.setSelectedItemId(R.id.navigation_mine);
+        } else {
+            current_user = getResources().getString(R.string.regist_or_login);
         }
+        BottomNavigationView navView = findViewById(R.id.nav_view);
+        navView.setSelectedItemId(R.id.navigation_home);
     }
 
     @Override
@@ -103,11 +105,12 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onFragmentInteraction(String name) {
-        Log.d("name ", name);
-        Log.d("r/l ", getResources().getString(R.string.regist_or_login));
-        if (name.equals(getResources().getString(R.string.regist_or_login))){
+        if (CeresConfig.currentUser == null){
             Intent intent = new Intent();
             intent.setClass(MainActivity.this, LoginActivity.class);
+            startActivityForResult(intent, 0);
+        } else {
+            Intent intent = new Intent(MainActivity.this, EditUserActivity.class);
             startActivityForResult(intent, 0);
         }
     }

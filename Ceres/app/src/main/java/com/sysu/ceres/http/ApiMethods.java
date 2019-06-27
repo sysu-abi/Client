@@ -36,6 +36,10 @@ public class ApiMethods {
         ApiSubscribe(Api.getApiService().userRigist(name, phone, email, password), observer);
     }
 
+    public static void updateUser(Observer<Status> observer, String name, String phone, String email, String password, int money) {
+        ApiSubscribe(Api.getApiService().updateUser(name, phone, email, password, money), observer);
+    }
+
     public static void userLogin(Observer<Status> observer, String name, String password) {
         ApiSubscribe(Api.getApiService().userLogin(name, password), observer);
     }
@@ -75,6 +79,10 @@ public class ApiMethods {
         ApiSubscribe(Api.getApiService().endTask(tid, uid), observer);
     }
 
+    public static void getTask(Observer<TaskList> observer, int tid) {
+        ApiSubscribe(Api.getApiService().getTask(tid), observer);
+    }
+
     public static void getTaskList(Observer<TaskList> observer) {
         ApiSubscribe(Api.getApiService().getTaskList(false), observer);
     }
@@ -105,9 +113,20 @@ public class ApiMethods {
     public static void getMessageList(Observer<MessageList> observer, int tid) {
         ApiSubscribe(Api.getApiService().getMessageList(tid), observer);
     }
+    public static void createMessage(Observer<Status> observer, int tid, int uid, String detail) {
+        ApiSubscribe(Api.getApiService().createMessage(tid, uid, detail), observer);
+    }
+
+    public static void removeMessage(Observer<Status> observer, int tid, int floor) {
+        ApiSubscribe(Api.getApiService().removeMessage(tid, floor), observer);
+    }
 
     public static void addQuestion(Observer<Status> observer, long sid, long qid, String qtype, String qtitle, String answer_a, String answer_b, String answer_c, String answer_d) {
         ApiSubscribe(Api.getApiService().addQuestion(sid, qid, qtype, qtitle, answer_a, answer_b, answer_c, answer_d), observer);
+    }
+
+    public static void createSurvey(Observer<Status> observer, int tid) {
+        ApiSubscribe(Api.getApiService().createSurvey(tid), observer);
     }
 
     public static void getSurveyList(Observer<SurveyList> observer, long tid) {

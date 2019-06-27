@@ -18,12 +18,15 @@ import androidx.lifecycle.ViewModelProviders;
 
 import com.sysu.ceres.CeresConfig;
 import com.sysu.ceres.R;
+import com.sysu.ceres.activity.DoSurveyActivity;
 import com.sysu.ceres.activity.EditTaskActivity;
 import com.sysu.ceres.activity.LoginActivity;
+import com.sysu.ceres.http.Api;
 import com.sysu.ceres.http.ApiMethods;
 import com.sysu.ceres.model.Status;
 import com.sysu.ceres.model.SurveyList;
 import com.sysu.ceres.model.Task;
+import com.sysu.ceres.model.TaskList;
 import com.sysu.ceres.model.UserList;
 import com.sysu.ceres.observer.MyObserver;
 import com.sysu.ceres.observer.ObserverOnNextListener;
@@ -38,9 +41,19 @@ import static android.content.ContentValues.TAG;
 public class TaskDetailFragment extends Fragment {
 
     private static final String ARG_CURRENT_TASK = "current_task";
-
+    private static final String ARG_SURVEY_SID = "survey_sid";
     //0-未参与；1-参与；2-发布者; 3-发布者带问卷
     private int show_status = 0;
+
+    TextView task_title;
+    TextView task_detail;
+    TextView task_current_num;
+    TextView task_total_num;
+    TextView task_type;
+    TextView task_money;
+    TextView task_start_time;
+    TextView task_end_time;
+
     Button edit_btn;
     Button disjoin_btn;
     Button finish_btn;
@@ -48,6 +61,8 @@ public class TaskDetailFragment extends Fragment {
     Button get_statistic_btn;
 
     private Task currentTask;
+    private int tid;
+
     private ObserverOnNextListener<Status> listener = new ObserverOnNextListener<Status>() {
         @Override
         public void onNext(Status status) {
@@ -88,7 +103,24 @@ public class TaskDetailFragment extends Fragment {
         @Override
         public void onNext(SurveyList surveyList) {
             Log.d(TAG, "onNext: " + surveyList.getStatus());
-            long sid = surveyList.getSurvey().get(0).getSid();
+            if (surveyList.getStatus().equals("success") && !surveyList.getSurvey().isEmpty()) {
+                long sid = surveyList.getSurvey().get(0).getSid();
+                Intent intent = new Intent(getActivity(), DoSurveyActivity.class);
+                intent.putExtra(ARG_SURVEY_SID, sid);
+                startActivity(intent);
+            }
+        }
+    };
+
+    ObserverOnNextListener<TaskList> getTasklistener = new ObserverOnNextListener<TaskList>() {
+        @Override
+        public void onNext(TaskList tasklist) {
+            Log.d(TAG, "onNext: " + tasklist.toString());
+            if (currentTask != null) {
+                currentTask = tasklist.getTask();
+                tid = currentTask.getTid().intValue();
+                refreshData();
+            }
         }
     };
 
@@ -106,6 +138,7 @@ public class TaskDetailFragment extends Fragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             currentTask = (Task) getArguments().getSerializable(ARG_CURRENT_TASK);
+            tid = currentTask.getTid().intValue();
         }
         if (CeresConfig.currentUser == null) {
             show_status = 0; //未参与
@@ -116,21 +149,7 @@ public class TaskDetailFragment extends Fragment {
         }
     }
 
-    @Override
-    public View onCreateView(
-            @NonNull LayoutInflater inflater, ViewGroup container,
-            Bundle savedInstanceState) {
-        final View root = inflater.inflate(R.layout.fragment_task_detail, container, false);
-
-        final TextView task_title = root.findViewById(R.id.task_detail_title);
-        final TextView task_detail = root.findViewById(R.id.task_detail_detail);
-        final TextView task_current_num = root.findViewById(R.id.task_detail_current_num);
-        final TextView task_total_num = root.findViewById(R.id.task_detail_total_num);
-        final TextView task_type = root.findViewById(R.id.task_detail_type);
-        final TextView task_money = root.findViewById(R.id.task_detail_money);
-        final TextView task_start_time = root.findViewById(R.id.task_detail_start_time);
-        final TextView task_end_time = root.findViewById(R.id.task_detail_end_time);
-
+    void refreshData() {
         task_title.setText(currentTask.getTitle());
         task_detail.setText(currentTask.getDetail());
         task_current_num.setText("Current num: " + currentTask.getCurrentNum().toString());
@@ -141,6 +160,45 @@ public class TaskDetailFragment extends Fragment {
         task_start_time.setText("Start Time: " + time.toString());
         time = new Timestamp(currentTask.getEndTime());
         task_end_time.setText("End Time: " + time.toString());
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (currentTask != null) {
+            ApiMethods.getTask(new MyObserver<TaskList>(getActivity(), getTasklistener), tid);
+        }
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser) {
+            //相当于Fragment的onResume
+            if (currentTask != null) {
+                ApiMethods.getTask(new MyObserver<TaskList>(getActivity(), getTasklistener), tid);
+            }
+        } else {
+            //相当于Fragment的onPause
+        }
+    }
+
+    @Override
+    public View onCreateView(
+            @NonNull LayoutInflater inflater, ViewGroup container,
+            Bundle savedInstanceState) {
+        final View root = inflater.inflate(R.layout.fragment_task_detail, container, false);
+
+        task_title = root.findViewById(R.id.task_detail_title);
+        task_detail = root.findViewById(R.id.task_detail_detail);
+        task_current_num = root.findViewById(R.id.task_detail_current_num);
+        task_total_num = root.findViewById(R.id.task_detail_total_num);
+        task_type = root.findViewById(R.id.task_detail_type);
+        task_money = root.findViewById(R.id.task_detail_money);
+        task_start_time = root.findViewById(R.id.task_detail_start_time);
+        task_end_time = root.findViewById(R.id.task_detail_end_time);
+
+        refreshData();
 
         edit_btn = root.findViewById(R.id.task_detail_edit_btn);
         disjoin_btn = root.findViewById(R.id.task_detail_disjoin_btn);
@@ -148,8 +206,8 @@ public class TaskDetailFragment extends Fragment {
         join_btn = root.findViewById(R.id.task_detail_join_btn);
         get_statistic_btn = root.findViewById(R.id.task_detail_get_static);
 
-        Log.d("current task uid: " , currentTask.getUid().toString());
-        Log.d("user: ", CeresConfig.currentUser.getUid().toString());
+        //Log.d("current task uid: " , currentTask.getUid().toString());
+        //Log.d("user: ", CeresConfig.currentUser.getUid().toString());
 
         switch (show_status) {
             case 0:
@@ -219,8 +277,12 @@ public class TaskDetailFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 if (CeresConfig.currentUser != null) {
-                    ApiMethods.joinTask(new MyObserver<Status>(root.getContext(), listener),
-                            currentTask.getTid().intValue(), CeresConfig.currentUser.getUid().intValue());
+                    if (currentTask.getType().equals("survey")) {
+                        ApiMethods.getSurveyList(new MyObserver<SurveyList>(root.getContext(), surveyList_listener), currentTask.getTid());
+                    } else {
+                        ApiMethods.joinTask(new MyObserver<Status>(root.getContext(), listener),
+                                currentTask.getTid().intValue(), CeresConfig.currentUser.getUid().intValue());
+                    }
                 } else {
                     Intent intent = new Intent();
                     intent.setClass(getActivity(), LoginActivity.class);

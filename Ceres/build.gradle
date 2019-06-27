@@ -41,6 +41,7 @@ allprojects {
         maven {
             url "https://maven.google.com"
         }
+        maven { url "https://jitpack.io" }
         // 保留google源
         google()
         jcenter()

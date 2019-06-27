@@ -1,6 +1,7 @@
 package com.sysu.ceres.fragment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -13,11 +14,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.sysu.ceres.CeresConfig;
+import com.sysu.ceres.activity.CreatSurveyActivity;
+import com.sysu.ceres.activity.CreateMessageActivity;
+import com.sysu.ceres.activity.LoginActivity;
 import com.sysu.ceres.adapter.MyMessageRecyclerViewAdapter;
 import com.sysu.ceres.R;
 import com.sysu.ceres.http.ApiMethods;
 import com.sysu.ceres.model.Message;
 import com.sysu.ceres.model.MessageList;
+import com.sysu.ceres.model.Status;
+import com.sysu.ceres.model.TaskList;
 import com.sysu.ceres.observer.MyObserver;
 import com.sysu.ceres.observer.ObserverOnNextListener;
 
@@ -42,6 +50,17 @@ public class MessageFragment extends Fragment {
     private List<Message> myMessageList = new ArrayList<>();
     private MyMessageRecyclerViewAdapter myMessageRecyclerViewAdapter;
 
+    ObserverOnNextListener<MessageList> listener = new ObserverOnNextListener<MessageList>() {
+        @Override
+        public void onNext(MessageList messageList) {
+            Log.d(TAG, "onNext: " + messageList.toString());
+            myMessageList = messageList.getMessages();
+            for (Message sub : myMessageList) {
+                Log.d(TAG, "onNext: " + sub.toString());
+            }
+            myMessageRecyclerViewAdapter.setList(myMessageList);
+        }
+    };
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -71,32 +90,51 @@ public class MessageFragment extends Fragment {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        if (tid != -1) {
+            ApiMethods.getMessageList(new MyObserver<MessageList>(getActivity(), listener), tid);
+        }
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser) {
+            //相当于Fragment的onResume
+            if (tid != -1) {
+                ApiMethods.getMessageList(new MyObserver<MessageList>(getActivity(), listener), tid);
+            }
+        } else {
+            //相当于Fragment的onPause
+        }
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_message_list, container, false);
 
-        ObserverOnNextListener<MessageList> listener = new ObserverOnNextListener<MessageList>() {
-            @Override
-            public void onNext(MessageList messageList) {
-                Log.d(TAG, "onNext: " + messageList.toString());
-                myMessageList = messageList.getMessages();
-                for (Message sub : myMessageList) {
-                    Log.d(TAG, "onNext: " + sub.toString());
-                }
-                myMessageRecyclerViewAdapter.setList(myMessageList);
-            }
-        };
         ApiMethods.getMessageList(new MyObserver<MessageList>(view.getContext(), listener), tid);
+        FloatingActionButton fab = view.findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (CeresConfig.currentUser == null) {
+                    Intent intent = new Intent();
+                    intent.setClass(getActivity(), LoginActivity.class);
+                    startActivityForResult(intent, 0);
+                } else {
+                    Intent intent = new Intent(getActivity(), CreateMessageActivity.class);
+                    intent.putExtra(ARG_TASK_ID, tid);
+                    startActivity(intent);
+                }
+            }
+        });
 
         // Set the adapter
         if (view != null) {
-            Context context = view.getContext();
-            RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.list);
-            if (tid <= 1) {
-                recyclerView.setLayoutManager(new LinearLayoutManager(context));
-            } else {
-                recyclerView.setLayoutManager(new GridLayoutManager(context, tid));
-            }
+            RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.message_list);
             myMessageRecyclerViewAdapter = new MyMessageRecyclerViewAdapter(myMessageList, mListener);
             recyclerView.setAdapter(myMessageRecyclerViewAdapter);
         }

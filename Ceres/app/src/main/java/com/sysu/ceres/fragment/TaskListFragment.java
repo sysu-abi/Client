@@ -12,6 +12,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 
 import com.sysu.ceres.CeresConfig;
 import com.sysu.ceres.adapter.MyTaskRecyclerViewAdapter;
@@ -22,7 +24,12 @@ import com.sysu.ceres.model.TaskList;
 import com.sysu.ceres.observer.MyObserver;
 import com.sysu.ceres.observer.ObserverOnNextListener;
 
+import org.angmarch.views.NiceSpinner;
+import org.angmarch.views.OnSpinnerItemSelectedListener;
+
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
 import static android.content.ContentValues.TAG;
@@ -41,6 +48,18 @@ public class TaskListFragment extends Fragment {
     // 0- default; 1-ddl; 2-money; 3-starttime; 4-myjointask; 5-mypublishtask
     private int getListMethod = 0;
     private String getListOrder = "asc";
+
+    ObserverOnNextListener<TaskList> listener = new ObserverOnNextListener<TaskList>() {
+        @Override
+        public void onNext(TaskList tasklist) {
+            Log.d(TAG, "onNext: " + tasklist.toString());
+            myTaskList = tasklist.getTaskList();
+            for (Task sub : myTaskList) {
+                Log.d(TAG, "onNext: " + sub.toString());
+            }
+            myListViewAdapter.setList(myTaskList);
+        }
+    };
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
@@ -70,61 +89,76 @@ public class TaskListFragment extends Fragment {
 
     }
 
+    void getTaskList() {
+        switch (getListMethod) {
+            case 0:
+                ApiMethods.getTaskList(new MyObserver<TaskList>(getActivity(), listener));
+                break;
+            case 1:
+                ApiMethods.getTaskListByDDL(new MyObserver<TaskList>(getActivity(), listener), getListOrder);
+                break;
+            case 2:
+                ApiMethods.getTaskListByMoney(new MyObserver<TaskList>(getActivity(), listener), getListOrder);
+                break;
+            case 3:
+                ApiMethods.getTaskListByStartTime(new MyObserver<TaskList>(getActivity(), listener), getListOrder);
+                break;
+            case 4:
+                ApiMethods.getJoinTasks(new MyObserver<TaskList>(getActivity(), listener),
+                        CeresConfig.currentUser.getUid().intValue());
+                break;
+            case 5:
+                ApiMethods.getPublishTasks(new MyObserver<TaskList>(getActivity(), listener),
+                        CeresConfig.currentUser.getUid().intValue());
+                break;
+            default:
+                ApiMethods.getTaskList(new MyObserver<TaskList>(getActivity(), listener));
+                break;
+        }
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_task_list, container, false);
 
-        ObserverOnNextListener<TaskList> listener = new ObserverOnNextListener<TaskList>() {
+        NiceSpinner niceSpinner = (NiceSpinner) view.findViewById(R.id.nice_spinner);
+        List<String> dataset = new LinkedList<>(Arrays.asList("Default", "DDL", "Money", "StartTime"));
+        niceSpinner.attachDataSource(dataset);
+        niceSpinner.setOnSpinnerItemSelectedListener(new OnSpinnerItemSelectedListener() {
             @Override
-            public void onNext(TaskList tasklist) {
-                Log.d(TAG, "onNext: " + tasklist.toString());
-                myTaskList = tasklist.getTaskList();
-                for (Task sub : myTaskList) {
-                    Log.d(TAG, "onNext: " + sub.toString());
+            public void onItemSelected(NiceSpinner parent, View view, int position, long id) {
+                // This example uses String, but your type can be any
+                //String item = parent.getItemAtPosition(position);
+                getListMethod = position;
+                getTaskList();
+            }
+        });
+
+        CheckBox checkBox = view.findViewById(R.id.desc_checkbox);
+        checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked){
+                    getListOrder = "desc";
+                }else{
+                    getListOrder = "asc";
                 }
-                myListViewAdapter.setList(myTaskList);
+                getTaskList();
             }
-        };
+        });
 
-        switch (getListMethod) {
-            case 0:
-                ApiMethods.getTaskList(new MyObserver<TaskList>(view.getContext(), listener));
-                break;
-            case 1:
-                ApiMethods.getTaskListByDDL(new MyObserver<TaskList>(view.getContext(), listener), getListOrder);
-                break;
-            case 2:
-                ApiMethods.getTaskListByMoney(new MyObserver<TaskList>(view.getContext(), listener), getListOrder);
-                break;
-            case 3:
-                ApiMethods.getTaskListByStartTime(new MyObserver<TaskList>(view.getContext(), listener), getListOrder);
-                break;
-            case 4:
-                ApiMethods.getJoinTasks(new MyObserver<TaskList>(view.getContext(), listener),
-                        CeresConfig.currentUser.getUid().intValue());
-                break;
-            case 5:
-                ApiMethods.getPublishTasks(new MyObserver<TaskList>(view.getContext(), listener),
-                        CeresConfig.currentUser.getUid().intValue());
-                break;
-            default:
-                ApiMethods.getTaskList(new MyObserver<TaskList>(view.getContext(), listener));
-                break;
+        if (getListMethod == 4 || getListMethod == 5) {
+            niceSpinner.setVisibility(View.GONE);
+            checkBox.setVisibility(View.GONE);
         }
 
-        // Set the adapter
-        if (view instanceof RecyclerView) {
-            Context context = view.getContext();
-            RecyclerView recyclerView = (RecyclerView) view;
-            if (mColumnCount <= 1) {
-                recyclerView.setLayoutManager(new LinearLayoutManager(context));
-            } else {
-                recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
-            }
-            myListViewAdapter = new MyTaskRecyclerViewAdapter(myTaskList, mListener);
-            recyclerView.setAdapter(myListViewAdapter);
-        }
+        getTaskList();
+
+        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.task_list);
+        myListViewAdapter = new MyTaskRecyclerViewAdapter(myTaskList, mListener);
+        recyclerView.setAdapter(myListViewAdapter);
+
         return view;
     }
 

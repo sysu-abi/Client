@@ -12,6 +12,7 @@ import com.sysu.ceres.model.UserList;
 
 import io.reactivex.Observable;
 
+import io.reactivex.Observer;
 import retrofit2.http.POST;
 import retrofit2.http.Query;
 
@@ -25,6 +26,9 @@ public interface ApiService {
     // 查看用户资料：**http://111.230.13.139:8080/ServerAndDB/getUser?name=ycl
     @POST("getUser")
     Observable<Status> getUser(@Query("name") String name);
+    //    http://111.230.13.139:8080/ServerAndDB/updateUser?name=Tom&phone=23456789091&email=123@123.com&password=123&money=200
+    @POST("updateUser")
+    Observable<Status> updateUser(@Query("name") String name, @Query("phone") String phone, @Query("email") String email, @Query("password") String password, @Query("money") int money);
 
 
     //    创建任务：http://111.230.13.139:8080/ServerAndDB/createTask?uid=8&title=test&detail=abc&money=3&type=poll&total_num=2&end_time=2020-01-01 00:00:00
@@ -62,8 +66,9 @@ public interface ApiService {
     @POST("getJoinUsers")
     Observable<UserList> getJoinUsers(@Query("tid") int tid);
 
-
-
+//    http://111.230.13.139:8080/ServerAndDB/getTask?tid=3
+    @POST("getTask")
+    Observable<TaskList> getTask(@Query("tid") int tid);
 
     // 显示所有任务：http://111.230.13.139:8080/ServerAndDB/listTasks?extra=false
     @POST("listTasks")
@@ -88,7 +93,12 @@ public interface ApiService {
 //    获取某个任务下的所有留言：http://111.230.13.139:8080/ServerAndDB/listMessages?tid=3
     @POST("listMessages")
     Observable<MessageList> getMessageList(@Query("tid") int tid);
-
+//    http://111.230.13.139:8080/ServerAndDB/createMessage?tid=9&uid=11&detail=yyy
+    @POST("createMessage")
+    Observable<Status> createMessage(@Query("tid") int tid, @Query("uid") int uid, @Query("detail") String detail);
+//    http://111.230.13.139:8080/ServerAndDB/removeMessage?tid=3&rank=2
+    @POST("removeMessage")
+    Observable<Status> removeMessage(@Query("tid") int tid, @Query("rank") int floor);
 
     // 获取该用户参与的所有任务：**http://111.230.13.139:8080/ServerAndDB/getJoinTasks?uid=1
     @POST("getJoinTasks")
@@ -103,6 +113,9 @@ public interface ApiService {
                                        @Query("qtype") String qtype, @Query("qtitle") String qtitle,
                                        @Query("answer_a") String answer_a, @Query("answer_b") String answer_b,
                                        @Query("answer_c") String answer_c, @Query("answer_d") String answer_d);
+
+    @POST("createSurvey")
+    Observable<Status> createSurvey(@Query("tid") int tid);
 
     // 获取指定Task下的所有调查问卷  http://111.230.13.139:8080/ServerAndDB/getSurveyList?tid=3
     @POST("getSurveyList")
