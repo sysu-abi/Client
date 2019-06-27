@@ -1,8 +1,8 @@
 package com.sysu.ceres.model;
 
 public class QuestionList {
-    private long sid;
-    private long qid;
+    private Long sid;
+    private Long qid;
     private String qtype;
     private String qtitle;
     private String answerA;
@@ -10,11 +10,11 @@ public class QuestionList {
     private String answerD;
     private String answerC;
 
-    public long getSid() { return sid; }
-    public void setSid(long value) { this.sid = value; }
+    public Long getSid() { return sid; }
+    public void setSid(Long value) { this.sid = value; }
 
-    public long getQid() { return qid; }
-    public void setQid(long value) { this.qid = value; }
+    public Long getQid() { return qid; }
+    public void setQid(Long value) { this.qid = value; }
 
     public String getQtype() { return qtype; }
     public void setQtype(String value) { this.qtype = value; }

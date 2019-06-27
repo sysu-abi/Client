@@ -39,6 +39,8 @@ public class TaskDetailFragment extends Fragment {
 
     private static final String ARG_CURRENT_TASK = "current_task";
     private static final String ARG_SURVEY_SID = "survey_sid";
+    private static final String ARG_TID = "task_tid";
+
     //0-未参与；1-参与；2-发布者; 3-发布者带问卷; 4-发布者finish; 5-发布者finish带问卷
     private int show_status = 0;
 
@@ -92,9 +94,11 @@ public class TaskDetailFragment extends Fragment {
         public void onNext(SurveyList surveyList) {
             Log.d(TAG, "onNext: " + surveyList.getStatus());
             if (surveyList.getStatus().equals("success") && !surveyList.getSurvey().isEmpty()) {
-                long sid = surveyList.getSurvey().get(0).getSid();
+                int sid = surveyList.getSurvey().get(0).getSid().intValue();
+                Log.d("sid " , String.valueOf(sid));
                 if (show_status == 0) { //未参与 -> doSurvey
                     Intent intent = new Intent(getActivity(), DoSurveyActivity.class);
+                    intent.putExtra(ARG_TID, currentTask.getTid().intValue());
                     intent.putExtra(ARG_SURVEY_SID, sid);
                     startActivity(intent);
                 } else if (show_status == 3) { // 发布者带问卷 -> getStatistics
@@ -294,7 +298,7 @@ public class TaskDetailFragment extends Fragment {
             public void onClick(View view) {
                 if (CeresConfig.currentUser != null) {
                     if (currentTask.getType().equals("survey")) {
-                        ApiMethods.getSurveyList(new MyObserver<SurveyList>(root.getContext(), surveyList_listener), currentTask.getTid());
+                        ApiMethods.getSurveyList(new MyObserver<SurveyList>(root.getContext(), surveyList_listener), currentTask.getTid().intValue());
                     } else {
                         ApiMethods.joinTask(new MyObserver<Status>(root.getContext(), listener),
                                 currentTask.getTid().intValue(), CeresConfig.currentUser.getUid().intValue());
@@ -310,7 +314,7 @@ public class TaskDetailFragment extends Fragment {
         get_statistic_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ApiMethods.getSurveyList(new MyObserver<SurveyList>(root.getContext(), surveyList_listener), currentTask.getTid());
+                ApiMethods.getSurveyList(new MyObserver<SurveyList>(root.getContext(), surveyList_listener), currentTask.getTid().intValue());
             }
         });
 

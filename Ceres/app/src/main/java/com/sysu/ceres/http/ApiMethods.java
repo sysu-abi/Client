@@ -122,7 +122,7 @@ public class ApiMethods {
         ApiSubscribe(Api.getApiService().removeMessage(tid, floor), observer);
     }
 
-    public static void addQuestion(Observer<Status> observer, long sid, long qid, String qtype, String qtitle, String answer_a, String answer_b, String answer_c, String answer_d) {
+    public static void addQuestion(Observer<Status> observer, int sid, int qid, String qtype, String qtitle, String answer_a, String answer_b, String answer_c, String answer_d) {
         ApiSubscribe(Api.getApiService().addQuestion(sid, qid, qtype, qtitle, answer_a, answer_b, answer_c, answer_d), observer);
     }
 
@@ -130,19 +130,19 @@ public class ApiMethods {
         ApiSubscribe(Api.getApiService().createSurvey(tid), observer);
     }
 
-    public static void getSurveyList(Observer<SurveyList> observer, long tid) {
+    public static void getSurveyList(Observer<SurveyList> observer, int tid) {
         ApiSubscribe(Api.getApiService().getSurveyList(tid), observer);
     }
 
-    public static void getQuestionList(Observer<SurveyFull> observer, long sid) {
+    public static void getQuestionList(Observer<SurveyFull> observer, int sid) {
         ApiSubscribe(Api.getApiService().getQuestionList(sid), observer);
     }
 
-    public static void updateAnswers(Observer<Status> observer, long sid, long qid, String answer) {
+    public static void updateAnswers(Observer<Status> observer, int sid, int qid, String answer) {
         ApiSubscribe(Api.getApiService().updateAnswers(sid, qid, answer), observer);
     }
 
-    public static void getStatisticsList(Observer<StatisticList> observer, long sid) {
+    public static void getStatisticsList(Observer<StatisticList> observer, int sid) {
         ApiSubscribe(Api.getApiService().getStatisticsList(sid), observer);
     }
 

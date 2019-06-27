@@ -10,7 +10,9 @@ import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.sysu.ceres.CeresConfig;
 import com.sysu.ceres.R;
 import com.sysu.ceres.http.ApiMethods;
 import com.sysu.ceres.model.MessageList;
@@ -27,12 +29,16 @@ import static android.content.ContentValues.TAG;
 
 public class DoSurveyActivity extends AppCompatActivity {
     private static final String ARG_SURVEY_SID = "survey_sid";
+    private static final String ARG_TID = "task_tid";
+
     //todo
-    long sid;
-    int qid;
+    int sid;
+    int qid = 1;
+    int tid;
 
     private List<QuestionList> questionLists;
     private int ques_num;
+    private String choice_answer;
 
     TextView question_id;
     TextView qtitle;
@@ -48,6 +54,27 @@ public class DoSurveyActivity extends AppCompatActivity {
         public void onNext(SurveyFull surveyFull) {
             Log.d(TAG, "onNext: " + surveyFull.getStatus());
             questionLists = surveyFull.getQuestionList();
+            ques_num = questionLists.size();
+            if (ques_num == 0) {
+                Toast.makeText(DoSurveyActivity.this, "No questions in survey", Toast.LENGTH_SHORT).show();
+                finish();
+            } else {
+                display(qid);
+            }
+        }
+    };
+
+    private ObserverOnNextListener<Status> listener = new ObserverOnNextListener<Status>() {
+        @Override
+        public void onNext(Status status) {
+            Log.d(TAG, "onNext: " + status.toString());
+            if (status.getState().equals("success")) {
+                Toast.makeText(DoSurveyActivity.this,
+                        status.getState(), Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(DoSurveyActivity.this,
+                        status.getState(), Toast.LENGTH_SHORT).show();
+            }
         }
     };
 
@@ -56,7 +83,9 @@ public class DoSurveyActivity extends AppCompatActivity {
         public void onNext(Status status) {
             Log.d(TAG, "onNext: " + status.getStatus());
             if (status.getStatus() == "success") {
-                Log.d(TAG, "status success");
+                Log.d(TAG, "update answer: status success");
+            } else {
+                Log.d(TAG, "update answer: " + status.getLog());
             }
         }
     };
@@ -66,10 +95,13 @@ public class DoSurveyActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_do_survey);
         sid = getIntent().getIntExtra(ARG_SURVEY_SID, -1);
-        if(sid == -1) {
-            Log.d("no sid ", "-1");
+        tid = getIntent().getIntExtra(ARG_TID, -1);
+        if(sid == -1 || tid == -1) {
+            Log.d("no sid/tid ", "-1");
         }
+
         init();
+        ApiMethods.getQuestionList(new MyObserver<SurveyFull>(DoSurveyActivity.this, survey_full_listener), sid);
         radioHandle();
         clickHandle();
     }
@@ -85,9 +117,7 @@ public class DoSurveyActivity extends AppCompatActivity {
         submit_btn = findViewById(R.id.do_survey_submit_btn);
 
         qid = 1;
-        ques_num = questionLists.size();
         submit_btn.setText("NEXT");
-        display(qid);
     }
 
     void radioHandle() {
@@ -97,16 +127,16 @@ public class DoSurveyActivity extends AppCompatActivity {
             public void onCheckedChanged(RadioGroup radioGroup, int i) {
                 switch (i) {
                     case R.id.do_survey_answer_a:
-                        ApiMethods.updateAnswers(new MyObserver<Status>(DoSurveyActivity.this, status_listener), sid, qid, "A");
+                        choice_answer = "A";
                         break;
                     case R.id.do_survey_answer_b:
-                        ApiMethods.updateAnswers(new MyObserver<Status>(DoSurveyActivity.this, status_listener), sid, qid, "B");
+                        choice_answer = "B";
                         break;
                     case R.id.do_survey_answer_c:
-                        ApiMethods.updateAnswers(new MyObserver<Status>(DoSurveyActivity.this, status_listener), sid, qid, "C");
+                        choice_answer = "C";
                         break;
                     case R.id.do_survey_answer_d:
-                        ApiMethods.updateAnswers(new MyObserver<Status>(DoSurveyActivity.this, status_listener), sid, qid, "D");
+                        choice_answer = "D";
                         break;
                     default:
                         break;
@@ -119,13 +149,16 @@ public class DoSurveyActivity extends AppCompatActivity {
         submit_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (qid - 1 <= ques_num) {
+                ApiMethods.updateAnswers(new MyObserver<Status>(DoSurveyActivity.this, status_listener), sid, questionLists.get(qid - 1).getQid().intValue(), choice_answer);
+                if (qid < ques_num) {
                     submit_btn.setText("NEXT");
                     qid += 1;
                     display(qid);
                 }
                 else {
                     submit_btn.setText("SUBMIT");
+                    ApiMethods.joinTask(new MyObserver<Status>(DoSurveyActivity.this, listener),
+                            tid, CeresConfig.currentUser.getUid().intValue());
                     finish();
                 }
             }
@@ -135,10 +168,17 @@ public class DoSurveyActivity extends AppCompatActivity {
     void display(int qid) {
         String qid_string = String.valueOf(qid);
         question_id.setText("Question " + qid_string);
-        qtitle.setText(questionLists.get(qid).getQtitle());
-        answer_a.setText(questionLists.get(qid).getAnswerA());
-        answer_b.setText(questionLists.get(qid).getAnswerB());
-        answer_c.setText(questionLists.get(qid).getAnswerC());
-        answer_d.setText(questionLists.get(qid).getAnswerD());
+        qtitle.setText(questionLists.get(qid - 1).getQtitle());
+        answer_a.setText("A. " + questionLists.get(qid - 1).getAnswerA());
+        answer_b.setText("B. " + questionLists.get(qid - 1).getAnswerB());
+        answer_c.setText("C. " + questionLists.get(qid - 1).getAnswerC());
+        answer_d.setText("D. " + questionLists.get(qid - 1).getAnswerD());
+
+        if (qid < ques_num) {
+            submit_btn.setText("NEXT");
+        }
+        else {
+            submit_btn.setText("SUBMIT");
+        }
     }
 }

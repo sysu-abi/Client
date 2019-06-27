@@ -1,12 +1,12 @@
 package com.sysu.ceres.model;
 
 public class Survey {
-    private long tid;
-    private long sid;
+    private Long tid;
+    private Long sid;
 
-    public long getTid() { return tid; }
-    public void setTid(long value) { this.tid = value; }
+    public Long getTid() { return tid; }
+    public void setTid(Long value) { this.tid = value; }
 
-    public long getSid() { return sid; }
-    public void setSid(long value) { this.sid = value; }
+    public Long getSid() { return sid; }
+    public void setSid(Long value) { this.sid = value; }
 }

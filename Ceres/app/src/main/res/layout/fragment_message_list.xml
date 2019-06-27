@@ -6,7 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".fragment.MessageFragment"
     >
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/message_list"
         android:name="com.sysu.ceres.MessageFragment"

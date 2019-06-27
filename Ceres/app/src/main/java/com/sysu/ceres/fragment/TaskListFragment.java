@@ -40,7 +40,6 @@ public class TaskListFragment extends Fragment {
     private static final String ARG_GET_TASK_METHOD = "tasklist_method";
     private static final String ARG_GET_TASK_ORDER = "tasklist_order";
     // TODO: Customize parameters
-    private int mColumnCount = 1;
     private OnListFragmentInteractionListener mListener;
     private List<Task> myTaskList = new ArrayList<>();
     private MyTaskRecyclerViewAdapter myListViewAdapter;

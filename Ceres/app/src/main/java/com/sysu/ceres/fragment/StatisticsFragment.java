@@ -21,6 +21,7 @@ import com.sysu.ceres.model.StatisticList;
 import com.sysu.ceres.observer.MyObserver;
 import com.sysu.ceres.observer.ObserverOnNextListener;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static androidx.constraintlayout.widget.Constraints.TAG;
@@ -31,8 +32,9 @@ public class StatisticsFragment extends Fragment {
     private static final String ARG_SID = "survey-id";
     // TODO: Customize parameters
     private int mColumnCount = 1;
-    private List<Statistic> myStatisticList;
-    private long sid;
+    private List<Statistic> myStatisticList = new ArrayList<>();
+    private int sid;
+    private MyStatisticsRecyclerViewAdapter statisticsRecyclerViewAdapter;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -43,10 +45,10 @@ public class StatisticsFragment extends Fragment {
 
     // TODO: Customize parameter initialization
     @SuppressWarnings("unused")
-    public static StatisticsFragment newInstance(long sidArg) {
+    public static StatisticsFragment newInstance(int sidArg) {
         StatisticsFragment fragment = new StatisticsFragment();
         Bundle args = new Bundle();
-        args.putLong(ARG_SID, sidArg);
+        args.putInt(ARG_SID, sidArg);
         fragment.setArguments(args);
         return fragment;
     }
@@ -56,7 +58,7 @@ public class StatisticsFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         if (getArguments() != null) {
-            sid = getArguments().getLong(ARG_SID);
+            sid = getArguments().getInt(ARG_SID);
         }
     }
 
@@ -70,6 +72,7 @@ public class StatisticsFragment extends Fragment {
             public void onNext(StatisticList statisticList) {
                 Log.d(TAG, "onNext: " + statisticList.toString());
                 myStatisticList = statisticList.getStatistics();
+                statisticsRecyclerViewAdapter.setStatisticList(myStatisticList);
             }
         };
 
@@ -84,7 +87,8 @@ public class StatisticsFragment extends Fragment {
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-            recyclerView.setAdapter(new MyStatisticsRecyclerViewAdapter(myStatisticList));
+            statisticsRecyclerViewAdapter = new MyStatisticsRecyclerViewAdapter(myStatisticList);
+            recyclerView.setAdapter(statisticsRecyclerViewAdapter);
         }
         return view;
     }

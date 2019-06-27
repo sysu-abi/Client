@@ -14,7 +14,7 @@ import com.sysu.ceres.fragment.TaskListFragment;
 public class StatisticListActivity extends AppCompatActivity {
     private static final String ARG_SURVEY_SID = "survey_sid";
     //todo
-    long sid;
+    int sid;
 
     private FragmentTransaction transaction;
     private FragmentManager fragmentManager;

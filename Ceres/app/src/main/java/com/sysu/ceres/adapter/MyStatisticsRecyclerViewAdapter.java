@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.sysu.ceres.R;
 import com.sysu.ceres.model.Statistic;
+import com.sysu.ceres.model.StatisticList;
 
 import java.util.List;
 
@@ -18,6 +19,11 @@ public class MyStatisticsRecyclerViewAdapter extends RecyclerView.Adapter<MyStat
 
     public MyStatisticsRecyclerViewAdapter(List<Statistic> items) {
         mValues = items;
+    }
+
+    public void setStatisticList(List<Statistic> statisticList) {
+        mValues = statisticList;
+        notifyDataSetChanged();
     }
 
     @Override

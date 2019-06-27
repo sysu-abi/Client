@@ -26,11 +26,11 @@ import static android.content.ContentValues.TAG;
 public class CreatSurveyActivity extends AppCompatActivity {
 
     //Todo
-    long tid;
+    int tid;
     private static final String ARG_SURVEY_TID = "task_tid";
 
-    private long sid;
-    private long qid;
+    private int sid;
+    private int qid;
     TextView question_id;
     EditText question_content;
     EditText choice_a;
@@ -55,7 +55,7 @@ public class CreatSurveyActivity extends AppCompatActivity {
         public void onNext(SurveyList surveyList) {
             Log.d(TAG, "onNext: " + surveyList.getStatus());
             Log.d("surveyList ", surveyList.toString());
-            //sid = surveyList.getSurvey().get(0).getSid();
+            sid = surveyList.getSurvey().get(0).getSid().intValue();
         }
     };
 
