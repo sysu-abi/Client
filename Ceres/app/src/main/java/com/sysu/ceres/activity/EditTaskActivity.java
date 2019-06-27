@@ -131,20 +131,12 @@ public class EditTaskActivity extends AppCompatActivity implements OnDateSetList
                 .setCancelStringId("Cancel")
                 .setSureStringId("Sure")
                 .setTitleStringId("Choose End Time")
-                .setYearText("年")
-                .setMonthText("月")
-                .setDayText("日")
-                .setHourText("时")
-                .setMinuteText("分")
                 .setCyclic(false)
                 .setMinMillseconds(System.currentTimeMillis())
                 .setMaxMillseconds(System.currentTimeMillis() + tenYears)
                 .setCurrentMillseconds(end_time)
-                .setThemeColor(getResources().getColor(R.color.timepicker_dialog_bg))
+                .setThemeColor(getResources().getColor(R.color.colorPrimary))
                 .setType(Type.ALL)
-                .setWheelItemTextNormalColor(getResources().getColor(R.color.timetimepicker_default_text_color))
-                .setWheelItemTextSelectorColor(getResources().getColor(R.color.timepicker_toolbar_bg))
-                .setWheelItemTextSize(12)
                 .build();
     }
 
