@@ -31,14 +31,14 @@ public class CreatSurveyActivity extends AppCompatActivity {
 
     private long sid;
     private long qid;
-    final TextView question_id = findViewById(R.id.create_qid);
-    final EditText question_content = findViewById(R.id.question_content);
-    final EditText choice_a = findViewById(R.id.choice_a);
-    final EditText choice_b = findViewById(R.id.choice_b);
-    final EditText choice_c = findViewById(R.id.choice_c);
-    final EditText choice_d = findViewById(R.id.choice_d);
-    final Button next_btn = findViewById(R.id.create_ques_next_btn);
-    final Button finish_btn = findViewById(R.id.create_ques_finish_btn);
+    TextView question_id;
+    EditText question_content;
+    EditText choice_a;
+    EditText choice_b;
+    EditText choice_c;
+    EditText choice_d;
+    Button next_btn;
+    Button finish_btn;
 
     ObserverOnNextListener<Status> status_listener = new ObserverOnNextListener<Status>() {
         @Override
@@ -54,7 +54,8 @@ public class CreatSurveyActivity extends AppCompatActivity {
         @Override
         public void onNext(SurveyList surveyList) {
             Log.d(TAG, "onNext: " + surveyList.getStatus());
-            sid = surveyList.getSurvey().get(0).getSid();
+            Log.d("surveyList ", surveyList.toString());
+            //sid = surveyList.getSurvey().get(0).getSid();
         }
     };
 
@@ -66,11 +67,21 @@ public class CreatSurveyActivity extends AppCompatActivity {
         if(tid == -1) {
             Log.d("no tid ", "-1");
         }
+        ApiMethods.getSurveyList(new MyObserver<SurveyList>(CreatSurveyActivity.this, surveyList_listener), tid);
         init();
         clickHandle();
     }
 
     void init() {
+        question_id = findViewById(R.id.create_qid);
+        question_content = findViewById(R.id.question_content);
+        choice_a = findViewById(R.id.choice_a);
+        choice_b = findViewById(R.id.choice_b);
+        choice_c = findViewById(R.id.choice_c);
+        choice_d = findViewById(R.id.choice_d);
+        next_btn = findViewById(R.id.create_ques_next_btn);
+        finish_btn = findViewById(R.id.create_ques_finish_btn);
+
         qid = 1;
         question_id.setText("Question 1.");
         question_content.setText("");

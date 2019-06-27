@@ -137,8 +137,8 @@ public class TaskDetailFragment extends Fragment {
         join_btn = root.findViewById(R.id.task_detail_join_btn);
         get_statistic_btn = root.findViewById(R.id.task_detail_get_static);
 
-        Log.d("current task uid: " , currentTask.getUid().toString());
-        Log.d("user: ", CeresConfig.currentUser.getUid().toString());
+        //Log.d("current task uid: " , currentTask.getUid().toString());
+        //Log.d("user: ", CeresConfig.currentUser.getUid().toString());
 
         switch (show_status) {
             case 0:
