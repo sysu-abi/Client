@@ -27,8 +27,10 @@ import com.sysu.ceres.model.TaskList;
 import com.sysu.ceres.model.UserList;
 import com.sysu.ceres.observer.MyObserver;
 import com.sysu.ceres.observer.ObserverOnNextListener;
+import com.sysu.ceres.utils.TimeStringUtil;
 
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 
 import static android.content.ContentValues.TAG;
 
@@ -61,6 +63,8 @@ public class TaskDetailFragment extends Fragment {
 
     private Task currentTask;
     private int tid;
+
+    SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     private ObserverOnNextListener<Status> listener = new ObserverOnNextListener<Status>() {
         @Override
@@ -154,14 +158,12 @@ public class TaskDetailFragment extends Fragment {
     void refreshData() {
         task_title.setText(currentTask.getTitle());
         task_detail.setText(currentTask.getDetail());
-        task_current_num.setText("Current num: " + currentTask.getCurrentNum().toString());
-        task_total_num.setText("Total num: " + currentTask.getTotalNum().toString());
+        task_current_num.setText("Current Participants: " + currentTask.getCurrentNum().toString());
+        task_total_num.setText("Total Participants: " + currentTask.getTotalNum().toString());
         task_type.setText("Type: " + currentTask.getType());
-        task_money.setText("Money: "  + currentTask.getMoney().toString());
-        Timestamp time = new Timestamp(currentTask.getStartTime());
-        task_start_time.setText("Start Time: " + time.toString());
-        time = new Timestamp(currentTask.getEndTime());
-        task_end_time.setText("End Time: " + time.toString());
+        task_money.setText(currentTask.getMoney().toString());
+        task_start_time.setText("Start Time: " + TimeStringUtil.getDateToString(currentTask.getStartTime()));
+        task_end_time.setText("End Time: " + TimeStringUtil.getDateToString(currentTask.getEndTime()));
     }
 
     void refreshBtnVisibility(){

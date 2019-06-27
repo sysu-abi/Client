@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -156,6 +157,7 @@ public class TaskListFragment extends Fragment {
 
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.task_list);
         myListViewAdapter = new MyTaskRecyclerViewAdapter(myTaskList, mListener);
+        recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL));
         recyclerView.setAdapter(myListViewAdapter);
 
         return view;

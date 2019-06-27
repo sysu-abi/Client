@@ -20,6 +20,7 @@ import com.sysu.ceres.model.Task;
 import com.sysu.ceres.model.TaskList;
 import com.sysu.ceres.observer.MyObserver;
 import com.sysu.ceres.observer.ObserverOnNextListener;
+import com.sysu.ceres.utils.MyMD5Util;
 
 import static android.content.ContentValues.TAG;
 
@@ -123,8 +124,8 @@ public class LoginActivity extends AppCompatActivity {
                             "Password cannot be empty.", Toast.LENGTH_SHORT).show();
                 } else {
                     String name = username.getText().toString();
-                    String psd = password.getText().toString();
-                    String c_psd = confirm_psw.getText().toString();
+                    String psd = MyMD5Util.encrypt(password.getText().toString());
+                    String c_psd = MyMD5Util.encrypt(confirm_psw.getText().toString());
                     String phone = userphone.getText().toString();
                     String email = useremail.getText().toString();
                     if (login_or_register) { //login

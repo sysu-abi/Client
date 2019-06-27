@@ -31,6 +31,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import static android.content.ContentValues.TAG;
+import static com.sysu.ceres.utils.TimeStringUtil.getDateToString;
 
 public class EditTaskActivity extends AppCompatActivity implements OnDateSetListener {
     private static final String ARG_CURRENT_TASK = "current_task";
@@ -50,9 +51,6 @@ public class EditTaskActivity extends AppCompatActivity implements OnDateSetList
 
     int tid;
     long end_time;
-
-    SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
     private ObserverOnNextListener<Status> createSurveylistener = new ObserverOnNextListener<Status>() {
         @Override
         public void onNext(Status status) {
@@ -228,10 +226,5 @@ public class EditTaskActivity extends AppCompatActivity implements OnDateSetList
     public void onDateSet(TimePickerDialog timePickerView, long millseconds) {
         end_time = millseconds;
         btn_pick_end_time.setText(getDateToString(end_time));
-    }
-
-    public String getDateToString(long time) {
-        Date d = new Date(time);
-        return sf.format(d);
     }
 }

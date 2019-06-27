@@ -23,6 +23,7 @@
         android:inputType="textMultiLine"
         android:minLines="8"
         android:maxLines="10"
+        android:maxEms="59"
         android:background="@android:drawable/edit_text"
         android:scrollbars="vertical"
         android:hint="detail"

@@ -10,6 +10,7 @@ import android.widget.TextView;
 import com.sysu.ceres.R;
 import com.sysu.ceres.fragment.TaskListFragment.OnListFragmentInteractionListener;
 import com.sysu.ceres.model.Task;
+import com.sysu.ceres.utils.TimeStringUtil;
 
 import java.sql.Timestamp;
 import java.util.List;
@@ -46,8 +47,7 @@ public class MyTaskRecyclerViewAdapter extends RecyclerView.Adapter<MyTaskRecycl
         holder.mTitle.setText(mValues.get(position).getTitle());
         holder.mDetail.setText(mValues.get(position).getDetail());
         holder.mMoney.setText(mValues.get(position).getMoney().toString());
-        Timestamp endtime = new Timestamp(mValues.get(position).getEndTime());
-        holder.mEndTime.setText(endtime.toString());
+        holder.mEndTime.setText(TimeStringUtil.getDateToString(mValues.get(position).getEndTime()));
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -15,7 +15,7 @@ public class MyMD5Util {
             for (int i = 0; i < s.length; i++) {
                 result += Integer.toHexString((0x000000FF & s[i]) | 0xFFFFFF00).substring(6);
             }
-            return result;
+            return result.substring(8, 24);
         } catch (Exception e) {
             e.printStackTrace();
         }
