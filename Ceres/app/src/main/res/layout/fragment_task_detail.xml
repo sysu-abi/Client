@@ -41,6 +41,15 @@
         app:layout_constraintBottom_toTopOf="@id/task_detail_type"
         android:text="Money: "
         />
+    <ImageView
+        android:id="@+id/detail_image_money"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:src="@mipmap/baseline_attach_money_black_48"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/task_detail_type"
+        app:layout_constraintRight_toLeftOf="@id/task_detail_money"
+        />
 
     <TextView
         android:id="@+id/task_detail_current_num"
