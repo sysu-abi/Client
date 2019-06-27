@@ -31,6 +31,19 @@ public class EditUserActivity extends AppCompatActivity {
     Button logout_btn;
     private String current_user = null;
 
+    private ObserverOnNextListener<Status> refreshUserlistener = new ObserverOnNextListener<Status>() {
+        @Override
+        public void onNext(Status status) {
+            Log.d(TAG, "onNext: " + status.toString());
+            if (status.getStatus().equals("success")) {
+                CeresConfig.currentUser = status.getUser();
+                refresh();
+            } else {
+                CeresConfig.currentUser = null;
+            }
+        }
+    };
+
     private ObserverOnNextListener<Status> getUserlistener = new ObserverOnNextListener<Status>() {
         @Override
         public void onNext(Status status) {
@@ -84,6 +97,7 @@ public class EditUserActivity extends AppCompatActivity {
         logout_btn = findViewById(R.id.edit_logout_btn);
 
         current_user = CeresConfig.currentUser.getName();
+        ApiMethods.getUser(new MyObserver<Status>(EditUserActivity.this, refreshUserlistener), current_user);
 
         refresh();
 
